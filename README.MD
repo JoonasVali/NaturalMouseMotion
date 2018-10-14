@@ -1,4 +1,4 @@
-## Natural Mouse Motion by Joonas Vali (2018) ##
+## Natural Mouse Motion ##
 
 This library provides a way to move cursor to specified coordinates on screen reliably,
 while being randomly arced to look like real hand moved it there by using a mouse.

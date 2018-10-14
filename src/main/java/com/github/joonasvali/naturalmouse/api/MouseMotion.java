@@ -121,11 +121,11 @@ public class MouseMotion {
         simulatedMouseY += yStepSize;
 
         DoublePoint noise = noiseProvider.getNoise(random, distance);
-        DoublePoint deviation = deviationProvider.getDeviation(distance, completion, deviationMultiplierX, deviationMultiplierY);
+        DoublePoint deviation = deviationProvider.getDeviation(distance, completion);
 
         long endTime = startTime + stepTime * (i + 1);
-        int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() + noise.getX());
-        int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() + noise.getY());
+        int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noise.getX());
+        int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() * deviationMultiplierY + noise.getY());
 
         robot.mouseMove(
             Math.max(1, Math.min(screenSize.width - 1, mousePosX)),

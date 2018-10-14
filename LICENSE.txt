@@ -22,5 +22,5 @@ SOFTWARE.
 
 This project uses the following frameworks which are subject to their respective licensing terms.
 
-* SLF4J API
+* SLF4J API (Also MIT License - see above)
 

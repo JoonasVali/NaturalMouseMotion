@@ -8,11 +8,11 @@ public class SinusoidalDeviationProvider implements DeviationProvider {
   }
 
   @Override
-  public DoublePoint getDeviation(double totalDistanceInPixels, double completionFraction, double multiplierX, double multiplierY) {
+  public DoublePoint getDeviation(double totalDistanceInPixels, double completionFraction) {
     double deviationFunctionResult = (1 - Math.cos(completionFraction * Math.PI * 2)) / 2;
 
-    double deviationX = multiplierX * (totalDistanceInPixels / slopeDivider);
-    double deviationY = multiplierY * (totalDistanceInPixels / slopeDivider);
+    double deviationX = totalDistanceInPixels / slopeDivider;
+    double deviationY = totalDistanceInPixels / slopeDivider;
 
     return new DoublePoint(deviationFunctionResult * deviationX, deviationFunctionResult * deviationY);
   }
