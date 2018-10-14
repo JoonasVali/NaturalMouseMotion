@@ -36,17 +36,16 @@ public class MouseMotion {
   private Point mousePosition;
 
   /**
-   *
-   * @param deviationProvider creates arc or other disfigurement in otherwise straight trajectory
-   * @param noiseProvider creates random noise in the trajectory
-   * @param systemCalls interface for calling static system related methods
-   * @param xDest the x-coordinate of destination
-   * @param yDest the y-coordinate of destination
-   * @param random the random used for unpredictability
-   * @param robot the robot used for moving the mouse cursor
-   * @param mouseInfo the accessor for reading cursor position on screen
+   * @param deviationProvider   creates arc or other disfigurement in otherwise straight trajectory
+   * @param noiseProvider       creates random noise in the trajectory
+   * @param systemCalls         interface for calling static system related methods
+   * @param xDest               the x-coordinate of destination
+   * @param yDest               the y-coordinate of destination
+   * @param random              the random used for unpredictability
+   * @param robot               the robot used for moving the mouse cursor
+   * @param mouseInfo           the accessor for reading cursor position on screen
    * @param mouseMovementBaseMs approximate time in ms it takes to finish a single trajectory. (In reality it takes longer)
-   * @param overshoots the number of overshoots or false destinations the cursor makes at most, before arriving to destination
+   * @param overshoots          the number of overshoots or false destinations the cursor makes at most, before arriving to destination
    */
   public MouseMotion(DeviationProvider deviationProvider, NoiseProvider noiseProvider, SystemCalls systemCalls,
                      int xDest, int yDest, Random random, Robot robot, MouseInfoAccessor mouseInfo, long mouseMovementBaseMs,
@@ -54,13 +53,13 @@ public class MouseMotion {
     this.deviationProvider = deviationProvider;
     this.noiseProvider = noiseProvider;
     this.systemCalls = systemCalls;
-    this.xDest = xDest;
-    this.yDest = yDest;
+    this.screenSize = systemCalls.getScreenSize();
+    this.xDest = limitByScreenWidth(xDest);
+    this.yDest = limitByScreenHeight(yDest);
     this.random = random;
     this.robot = robot;
     this.mouseInfo = mouseInfo;
     this.overshoots = overshoots;
-    this.screenSize = systemCalls.getScreenSize();
     this.mouseMovementBaseMs = mouseMovementBaseMs;
   }
 
@@ -92,8 +91,12 @@ public class MouseMotion {
       if (overshoots > 0 && initialDistance > MIN_DISTANCE_FOR_OVERSHOOTS) {
         // Let's miss the target a bit at first.
         double randomModifier = initialDistance / 10;
-        xDistance = xDistance + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
-        yDistance = yDistance + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
+        int overshootDestX = xDest + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
+        int overshootDestY = yDest + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
+        overshootDestX = limitByScreenWidth(overshootDestX);
+        overshootDestY = limitByScreenHeight(overshootDestY);
+        xDistance = overshootDestX - mousePosition.x;
+        yDistance = overshootDestY - mousePosition.y;
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
         mouseMovementMs /= 1.2;
         overshoots--;
@@ -128,8 +131,8 @@ public class MouseMotion {
         int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() * deviationMultiplierY + noise.getY());
 
         robot.mouseMove(
-            Math.max(1, Math.min(screenSize.width - 1, mousePosX)),
-            Math.max(1, Math.min(screenSize.height - 1, mousePosY))
+            limitByScreenWidth(mousePosX),
+            limitByScreenHeight(mousePosY)
         );
 
         // Allow other action to take place, we'll later compensate by sleeping less.
@@ -141,6 +144,14 @@ public class MouseMotion {
       sleepAround(20, 120);
       updateMouseInfo();
     }
+  }
+
+  private int limitByScreenWidth(int value) {
+    return Math.max(1, Math.min(screenSize.width - 1, value));
+  }
+
+  private int limitByScreenHeight(int value) {
+    return Math.max(1, Math.min(screenSize.height - 1, value));
   }
 
   private void sleepAround(long sleep, long around) throws InterruptedException {
