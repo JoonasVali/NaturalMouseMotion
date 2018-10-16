@@ -61,6 +61,22 @@ public class MouseMotionTest extends MouseMotionTestBase {
   }
 
   @Test
+  public void cantMoveUpToScreenWidth_withOvershoots() throws InterruptedException {
+    // This helps to make sure that the test detects if used height instead of width or vice versa in implementation
+    Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    assertMousePosition(0, 0);
+    factory.setOvershoots(100);
+    factory.move(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 100);
+
+    ArrayList<Point> points = mouse.getMouseMovements();
+    for (Point p : points) {
+      Assert.assertTrue(p.getX() < SCREEN_WIDTH);
+    }
+    assertMousePosition(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 100);
+  }
+
+  @Test
   public void cantMoveUpToScreenHeight_noOvershoots() throws InterruptedException {
     // This helps to make sure that the test detects if used height instead of width or vice versa in implementation
     Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -68,6 +84,22 @@ public class MouseMotionTest extends MouseMotionTestBase {
     assertMousePosition(0, 0);
     factory.setOvershoots(0);
     factory.move(SCREEN_WIDTH - 100, SCREEN_HEIGHT + 100);
+
+    ArrayList<Point> points = mouse.getMouseMovements();
+    for (Point p : points) {
+      Assert.assertTrue(p.getY() < SCREEN_HEIGHT);
+    }
+    assertMousePosition(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 1);
+  }
+
+  @Test
+  public void cantMoveUpToScreenHeight_withOvershoots() throws InterruptedException {
+    // This helps to make sure that the test detects if used height instead of width or vice versa in implementation
+    Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    assertMousePosition(0, 0);
+    factory.setOvershoots(100);
+    factory.move(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 1);
 
     ArrayList<Point> points = mouse.getMouseMovements();
     for (Point p : points) {
