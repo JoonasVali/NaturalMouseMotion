@@ -22,6 +22,7 @@ public class MouseMotion {
   private static final int MOUSE_MOVEMENT_FLUCTATION_MS = 150;
   private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
   private static final int DISTANCE_TO_STEPS_DIVIDER = 6;
+  private static final int MIN_STEPS = 10;
   private final long mouseMovementBaseMs;
   private final Dimension screenSize;
   private final SystemCalls systemCalls;
@@ -93,8 +94,6 @@ public class MouseMotion {
         double randomModifier = initialDistance / 10;
         int overshootDestX = xDest + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
         int overshootDestY = yDest + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
-        overshootDestX = limitByScreenWidth(overshootDestX);
-        overshootDestY = limitByScreenHeight(overshootDestY);
         xDistance = overshootDestX - mousePosition.x;
         yDistance = overshootDestY - mousePosition.y;
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
@@ -102,7 +101,7 @@ public class MouseMotion {
         overshoots--;
       }
 
-      int steps = Math.max(10, (int) (distance / DISTANCE_TO_STEPS_DIVIDER));
+      int steps = Math.max(MIN_STEPS, (int) (distance / DISTANCE_TO_STEPS_DIVIDER));
       double xStepSize = (xDistance / (double) steps);
       double yStepSize = (yDistance / (double) steps);
 
@@ -130,9 +129,11 @@ public class MouseMotion {
         int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noise.getX());
         int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() * deviationMultiplierY + noise.getY());
 
+        mousePosX = limitByScreenWidth(mousePosX);
+        mousePosY = limitByScreenHeight(mousePosY);
         robot.mouseMove(
-            limitByScreenWidth(mousePosX),
-            limitByScreenHeight(mousePosY)
+            mousePosX,
+            mousePosY
         );
 
         // Allow other action to take place, we'll later compensate by sleeping less.
@@ -147,11 +148,11 @@ public class MouseMotion {
   }
 
   private int limitByScreenWidth(int value) {
-    return Math.max(1, Math.min(screenSize.width - 1, value));
+    return Math.max(0, Math.min(screenSize.width - 1, value));
   }
 
   private int limitByScreenHeight(int value) {
-    return Math.max(1, Math.min(screenSize.height - 1, value));
+    return Math.max(0, Math.min(screenSize.height - 1, value));
   }
 
   private void sleepAround(long sleep, long around) throws InterruptedException {
