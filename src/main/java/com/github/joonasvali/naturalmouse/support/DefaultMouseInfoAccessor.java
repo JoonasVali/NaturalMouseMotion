@@ -5,7 +5,7 @@ import java.awt.*;
 public class DefaultMouseInfoAccessor implements MouseInfoAccessor {
 
   @Override
-  public Point getMouseInfo() {
+  public Point getMousePosition() {
     return MouseInfo.getPointerInfo().getLocation();
   }
 }

@@ -12,18 +12,20 @@ import com.github.joonasvali.naturalmouse.support.SystemCalls;
 import java.awt.*;
 import java.util.Random;
 
+import static com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider.DEFAULT_CHANCE_OF_NOISE;
+import static com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider.DEFAULT_DISTANCE_DIVIDER;
+import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER;
+
 /**
  * This class should be used for creating new MouseMotion-s
  * The default instance is available via getDefault(), but can create new instance via constructor.
  */
 public class MouseMotionFactory {
-  private static final int DEFAULT_SLOPE_DIVIDER = 10;
-  private static final double DEFAULT_CHANCE_OF_NOISE = 0.1;
   private static final MouseMotionFactory defaultFactory = new MouseMotionFactory();
 
   private SystemCalls systemCalls = new DefaultSystemCalls();
   private DeviationProvider deviationProvider = new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER);
-  private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_CHANCE_OF_NOISE);
+  private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_CHANCE_OF_NOISE, DEFAULT_DISTANCE_DIVIDER);
   private int mouseMovementBaseMs = 250;
 
   private Random random = new Random();

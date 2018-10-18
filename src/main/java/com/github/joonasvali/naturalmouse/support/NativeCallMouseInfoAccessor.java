@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * This is faster version of MouseInfoAccessor. Should be around 2x faster than
  * DefaultMouseInfoAccessor, because the latter also returns Device info
  * while we only care about position. This class also reuses the returned Point from
- * getMouseInfo which is filled with the mouse data, so it doesn't create unnecessary temporary objects.
+ * getMousePosition which is filled with the mouse data, so it doesn't create unnecessary temporary objects.
  *
  * Since this class uses internal API, it's experimental and
  * not guaranteed to work everywhere or all situations. Use with caution.
@@ -34,7 +34,7 @@ public class NativeCallMouseInfoAccessor implements MouseInfoAccessor {
   }
 
   @Override
-  public Point getMouseInfo() {
+  public Point getMousePosition() {
     peer.fillPointWithCoords(p);
     return p;
   }

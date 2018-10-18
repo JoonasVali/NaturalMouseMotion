@@ -48,7 +48,7 @@ public class MouseMotionTestBase {
   }
 
   protected void assertMousePosition(int x, int y) {
-    Point pos = mouse.getMouseInfo();
+    Point pos = mouse.getMousePosition();
     Assert.assertEquals(x, pos.getX(), SMALL_DELTA);
     Assert.assertEquals(y, pos.getY(), SMALL_DELTA);
   }
@@ -97,7 +97,7 @@ public class MouseMotionTestBase {
     }
 
     @Override
-    public Point getMouseInfo() {
+    public Point getMousePosition() {
       return mouseMovements.get(mouseMovements.size() - 1);
     }
 

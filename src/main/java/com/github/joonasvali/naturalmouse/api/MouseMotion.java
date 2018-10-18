@@ -160,6 +160,6 @@ public class MouseMotion {
   }
 
   private void updateMouseInfo() {
-    mousePosition = mouseInfo.getMouseInfo();
+    mousePosition = mouseInfo.getMousePosition();
   }
 }
