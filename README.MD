@@ -11,11 +11,13 @@ https://www.youtube.com/watch?v=wKJM2kFGMDk
 
 ## Maven: ##
 
+```
 <dependency>
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
   <version>1.0.1</version>
 </dependency>
+```
 
 ## Running: ##
 
