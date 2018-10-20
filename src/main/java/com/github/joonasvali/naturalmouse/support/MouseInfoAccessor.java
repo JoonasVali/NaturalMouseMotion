@@ -2,6 +2,9 @@ package com.github.joonasvali.naturalmouse.support;
 
 import java.awt.*;
 
+/**
+ * Abstraction for getting mouse position.
+ */
 public interface MouseInfoAccessor {
   /**
    * Get the current mouse position.
