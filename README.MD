@@ -7,7 +7,7 @@ they can heavily customize the settings and implementations responsible for the 
 of the cursor for specific use cases.
 
 ## Demonstration video: ##
-Not available yet
+https://www.youtube.com/watch?v=wKJM2kFGMDk
 
 
 ## Running: ##
