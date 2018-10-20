@@ -6,7 +6,7 @@
 
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <name>Natural Mouse Motion</name>
   <url>https://github.com/JoonasVali/NaturalMouseMotion</url>
   <description>This library provides a way to move cursor to specified coordinates on screen reliably,
@@ -112,6 +112,7 @@
             <artifactId>maven-gpg-plugin</artifactId>
             <version>1.5</version>
             <executions>
+              <!-- public key in http://keys.gnupg.net:11371/ -->
               <execution>
                 <id>sign-artifacts</id>
                 <phase>verify</phase>

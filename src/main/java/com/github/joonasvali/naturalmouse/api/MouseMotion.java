@@ -66,6 +66,7 @@ public class MouseMotion {
 
   /**
    * Blocking call, starts to move the cursor to the specified location from where it currently is.
+   * @throws InterruptedException when interrupted
    */
   public void move() throws InterruptedException {
     move((x, y) -> {
@@ -76,6 +77,7 @@ public class MouseMotion {
    * Blocking call, starts to move the cursor to the specified location from where it currently is.
    *
    * @param observer Provide observer if you are interested receiving the location of mouse on every step
+   * @throws InterruptedException when interrupted
    */
   public void move(MouseMotionObserver observer) throws InterruptedException {
     updateMouseInfo();
