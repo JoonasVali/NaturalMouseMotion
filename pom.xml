@@ -112,7 +112,6 @@
             <artifactId>maven-gpg-plugin</artifactId>
             <version>1.5</version>
             <executions>
-              <!-- public key in http://keys.gnupg.net:11371/ -->
               <execution>
                 <id>sign-artifacts</id>
                 <phase>verify</phase>
