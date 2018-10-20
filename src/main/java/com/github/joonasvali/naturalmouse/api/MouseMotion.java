@@ -92,8 +92,8 @@ public class MouseMotion {
       if (overshoots > 0 && initialDistance > MIN_DISTANCE_FOR_OVERSHOOTS) {
         // Let's miss the target a bit at first.
         double randomModifier = initialDistance / 10;
-        int overshootDestX = xDest + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
-        int overshootDestY = yDest + (int) (random.nextDouble() * randomModifier * overshoots - randomModifier / 2);
+        int overshootDestX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
+        int overshootDestY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
         xDistance = overshootDestX - mousePosition.x;
         yDistance = overshootDestY - mousePosition.y;
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
