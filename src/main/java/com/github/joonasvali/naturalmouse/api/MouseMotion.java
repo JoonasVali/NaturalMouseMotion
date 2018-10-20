@@ -136,7 +136,7 @@ public class MouseMotion {
             mousePosY
         );
 
-        // Allow other action to take place, we'll later compensate by sleeping less.
+        // Allow other action to take place or just observe, we'll later compensate by sleeping less.
         observer.observe(mousePosX, mousePosY);
 
         long timeLeft = endTime - systemCalls.currentTimeMillis();

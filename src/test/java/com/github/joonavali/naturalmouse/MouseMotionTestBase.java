@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MouseMotionTestBase {
-  public static final double SMALL_DELTA = 0.000001;
+  protected static final double SMALL_DELTA = 0.000001;
   protected static final int SCREEN_WIDTH = 800;
   protected static final int SCREEN_HEIGHT = 500;
   protected MouseMotionFactory factory;

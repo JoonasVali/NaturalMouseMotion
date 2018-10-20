@@ -6,7 +6,7 @@
 
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>Natural Mouse Motion</name>
   <description>This library provides a way to move cursor to specified coordinates on screen reliably,
     while being randomly arced to look like real hand moved it there by using a mouse.
