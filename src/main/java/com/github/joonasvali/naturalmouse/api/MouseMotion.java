@@ -23,6 +23,7 @@ public class MouseMotion {
   private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
   private static final int DISTANCE_TO_STEPS_DIVIDER = 6;
   private static final int MIN_STEPS = 10;
+  private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.2;
   private final long mouseMovementBaseMs;
   private final Dimension screenSize;
   private final SystemCalls systemCalls;
@@ -81,8 +82,11 @@ public class MouseMotion {
    */
   public void move(MouseMotionObserver observer) throws InterruptedException {
     updateMouseInfo();
+    log.info("Starting to move mouse to ({}, {}), current position: ({}, {})", xDest, yDest, mousePosition.x, mousePosition.y);
     double initialDistance = Math.sqrt(Math.pow(xDest - mousePosition.x, 2) + Math.pow(yDest - mousePosition.y, 2));
+
     long mouseMovementMs = this.mouseMovementBaseMs + (long) (random.nextDouble() * MOUSE_MOVEMENT_FLUCTATION_MS);
+    log.info("MouseMovementMs calculated to {} ms", mouseMovementMs);
     int overshoots = this.overshoots;
 
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
@@ -99,7 +103,8 @@ public class MouseMotion {
         xDistance = overshootDestX - mousePosition.x;
         yDistance = overshootDestY - mousePosition.y;
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-        mouseMovementMs /= 1.2;
+        log.debug("Using overshoots ({} out of {}), aiming at ({}, {})", overshoots, this.overshoots, overshootDestX, overshootDestY);
+        mouseMovementMs /= OVERSHOOT_SPEEDUP_DIVIDER;
         overshoots--;
       }
 
@@ -147,6 +152,7 @@ public class MouseMotion {
       sleepAround(20, 120);
       updateMouseInfo();
     }
+    log.info("Mouse movement to ({}, {}) completed", xDest, yDest);
   }
 
   private int limitByScreenWidth(int value) {
@@ -158,7 +164,12 @@ public class MouseMotion {
   }
 
   private void sleepAround(long sleep, long around) throws InterruptedException {
-    systemCalls.sleep((long) (sleep + random.nextDouble() * around));
+    long sleepTime = (long) (sleep + random.nextDouble() * around);
+    if (log.isTraceEnabled() && sleepTime > 0) {
+      updateMouseInfo();
+      log.trace("Sleeping at ({}, {}) for {} ms", mousePosition.x, mousePosition.y, sleepTime);
+    }
+    systemCalls.sleep(sleepTime);
   }
 
   private void updateMouseInfo() {
