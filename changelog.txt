@@ -1,0 +1,8 @@
+## v 1.0.2
+
+Feature: Added some missing logging
+Feature: Added automatic module name for Java9+
+
+## v 1.0.1
+
+Feature: Initial version released
