@@ -22,15 +22,16 @@ import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProv
  */
 public class MouseMotionFactory {
   private static final MouseMotionFactory defaultFactory = new MouseMotionFactory();
+  public static final int MIN_MOUSE_MOVEMENT_BASE_MS = 50;
 
   private SystemCalls systemCalls = new DefaultSystemCalls();
   private DeviationProvider deviationProvider = new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER);
   private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_CHANCE_OF_NOISE, DEFAULT_DISTANCE_DIVIDER);
-  private int mouseMovementBaseMs = 250;
+  private int mouseMovementBaseMs = 350;
 
   private Random random = new Random();
   private MouseInfoAccessor mouseInfo = new DefaultMouseInfoAccessor();
-  private int overshoots = 3;
+  private int overshoots = 4;
   private Robot robot;
 
   public MouseMotionFactory() {
@@ -69,6 +70,9 @@ public class MouseMotionFactory {
    * the actual movement will take longer depending on the number of overshoots and other randomized behavior.
    */
   public void setMouseMovementBaseMs(int mouseMovementBaseMs) {
+    if (mouseMovementBaseMs < MIN_MOUSE_MOVEMENT_BASE_MS) {
+      throw new IllegalArgumentException("Mouse movement base ms should be at least " + MIN_MOUSE_MOVEMENT_BASE_MS);
+    }
     this.mouseMovementBaseMs = mouseMovementBaseMs;
   }
 

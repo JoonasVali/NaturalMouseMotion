@@ -23,7 +23,9 @@ public class MouseMotion {
   private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
   private static final int TIME_TO_STEPS_DIVIDER = 8;
   private static final int MIN_STEPS = 10;
-  private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.2;
+  private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.8;
+  private static final int MIN_OVERSHOOT_MOVEMENT_MS = 40;
+  public static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
   private final long mouseMovementBaseMs;
   private final Dimension screenSize;
   private final SystemCalls systemCalls;
@@ -95,10 +97,10 @@ public class MouseMotion {
       int yDistance = yDest - mousePosition.y;
 
       double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-
+      double speedPixelsPerSecond = distance / mouseMovementMs * 1000;
       if (overshoots > 0 && initialDistance > MIN_DISTANCE_FOR_OVERSHOOTS) {
         // Let's miss the target a bit at first.
-        double randomModifier = initialDistance / 10;
+        double randomModifier = speedPixelsPerSecond / OVERSHOOT_RANDOM_MODIFIER_DIVIDER;
         int overshootDestX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
         int overshootDestY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
         xDistance = overshootDestX - mousePosition.x;
@@ -106,6 +108,7 @@ public class MouseMotion {
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
         log.debug("Using overshoots ({} out of {}), aiming at ({}, {})", overshoots, this.overshoots, overshootDestX, overshootDestY);
         mouseMovementMs /= OVERSHOOT_SPEEDUP_DIVIDER;
+        mouseMovementMs = Math.max(mouseMovementMs, MIN_OVERSHOOT_MOVEMENT_MS);
         overshoots--;
       }
 
