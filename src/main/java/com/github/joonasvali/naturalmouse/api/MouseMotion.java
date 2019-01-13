@@ -67,10 +67,12 @@ public class MouseMotion {
 
   /**
    * Blocking call, starts to move the cursor to the specified location from where it currently is.
+   *
    * @throws InterruptedException when interrupted
    */
   public void move() throws InterruptedException {
-    move((x, y) -> {});
+    move((x, y) -> {
+    });
   }
 
   /**
@@ -109,8 +111,7 @@ public class MouseMotion {
 
       /* Number of steps is calculated from the movement time and limited by minimal amount of steps
          (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
-      int steps = (int)Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS));
-      System.out.println(steps);
+      int steps = (int) Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS));
       double xStepSize = (xDistance / (double) steps);
       double yStepSize = (yDistance / (double) steps);
 
