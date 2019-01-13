@@ -15,7 +15,7 @@ https://www.youtube.com/watch?v=wKJM2kFGMDk
 <dependency>
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
