@@ -7,7 +7,7 @@ they can heavily customize the settings and implementations responsible for the 
 of the cursor for specific use cases.
 
 ## Demonstration video: ##
-https://www.youtube.com/watch?v=wKJM2kFGMDk
+https://www.youtube.com/watch?v=Z3srG195TIk
 
 ## Maven: ##
 
