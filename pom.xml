@@ -6,7 +6,7 @@
 
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <name>Natural Mouse Motion</name>
   <url>https://github.com/JoonasVali/NaturalMouseMotion</url>
   <description>This library provides a way to move cursor to specified coordinates on screen reliably,
