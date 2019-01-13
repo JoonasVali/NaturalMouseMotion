@@ -21,7 +21,7 @@ public class MouseMotion {
   private static final Logger log = LoggerFactory.getLogger(MouseMotion.class);
   private static final int MOUSE_MOVEMENT_FLUCTATION_MS = 150;
   private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
-  private static final int DISTANCE_TO_STEPS_DIVIDER = 6;
+  private static final int TIME_TO_STEPS_DIVIDER = 8;
   private static final int MIN_STEPS = 10;
   private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.2;
   private final long mouseMovementBaseMs;
@@ -70,8 +70,7 @@ public class MouseMotion {
    * @throws InterruptedException when interrupted
    */
   public void move() throws InterruptedException {
-    move((x, y) -> {
-    });
+    move((x, y) -> {});
   }
 
   /**
@@ -108,7 +107,10 @@ public class MouseMotion {
         overshoots--;
       }
 
-      int steps = Math.max(MIN_STEPS, (int) (distance / DISTANCE_TO_STEPS_DIVIDER));
+      /* Number of steps is calculated from the movement time and limited by minimal amount of steps
+         (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
+      int steps = (int)Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS));
+      System.out.println(steps);
       double xStepSize = (xDistance / (double) steps);
       double yStepSize = (yDistance / (double) steps);
 
