@@ -1,4 +1,6 @@
-package com.github.joonasvali.naturalmouse.support;
+package com.github.joonasvali.naturalmouse.api;
+
+import com.github.joonasvali.naturalmouse.support.DoublePoint;
 
 /**
  * Creates arcs or deviation into mouse movement.

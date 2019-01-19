@@ -1,5 +1,7 @@
 package com.github.joonasvali.naturalmouse.support;
 
+import com.github.joonasvali.naturalmouse.api.DeviationProvider;
+
 public class SinusoidalDeviationProvider implements DeviationProvider {
   public static final int DEFAULT_SLOPE_DIVIDER = 10;
   private final double slopeDivider;

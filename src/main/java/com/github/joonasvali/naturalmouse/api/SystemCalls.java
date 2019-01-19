@@ -1,4 +1,4 @@
-package com.github.joonasvali.naturalmouse.support;
+package com.github.joonasvali.naturalmouse.api;
 
 import java.awt.*;
 
@@ -9,4 +9,5 @@ public interface SystemCalls {
   long currentTimeMillis();
   void sleep(long time) throws InterruptedException;
   Dimension getScreenSize();
+  void setMousePosition(int x, int y);
 }

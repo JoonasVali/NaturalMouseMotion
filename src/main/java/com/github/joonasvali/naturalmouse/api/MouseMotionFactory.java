@@ -2,12 +2,9 @@ package com.github.joonasvali.naturalmouse.api;
 
 import com.github.joonasvali.naturalmouse.support.DefaultMouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider;
+import com.github.joonasvali.naturalmouse.support.DefaultSpeedManager;
 import com.github.joonasvali.naturalmouse.support.DefaultSystemCalls;
-import com.github.joonasvali.naturalmouse.support.DeviationProvider;
-import com.github.joonasvali.naturalmouse.support.MouseInfoAccessor;
-import com.github.joonasvali.naturalmouse.support.NoiseProvider;
 import com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider;
-import com.github.joonasvali.naturalmouse.support.SystemCalls;
 
 import java.awt.*;
 import java.util.Random;
@@ -22,21 +19,19 @@ import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProv
  */
 public class MouseMotionFactory {
   private static final MouseMotionFactory defaultFactory = new MouseMotionFactory();
-  public static final int MIN_MOUSE_MOVEMENT_BASE_MS = 50;
 
-  private SystemCalls systemCalls = new DefaultSystemCalls();
+  private SystemCalls systemCalls;
   private DeviationProvider deviationProvider = new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER);
   private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_CHANCE_OF_NOISE, DEFAULT_DISTANCE_DIVIDER);
-  private int mouseMovementBaseMs = 350;
+  private SpeedManager speedManager = new DefaultSpeedManager();
 
   private Random random = new Random();
   private MouseInfoAccessor mouseInfo = new DefaultMouseInfoAccessor();
   private int overshoots = 4;
-  private Robot robot;
 
   public MouseMotionFactory() {
     try {
-      robot = new Robot();
+      systemCalls = new DefaultSystemCalls(new Robot());
     } catch (AWTException e) {
       throw new RuntimeException(e);
     }
@@ -52,28 +47,7 @@ public class MouseMotionFactory {
    */
   public MouseMotion build(int xDest, int yDest) {
     return new MouseMotion(
-        deviationProvider, noiseProvider,
-        systemCalls, xDest, yDest, random, robot, mouseInfo,
-        mouseMovementBaseMs, overshoots);
-  }
-
-  /**
-   * @return the ms which the mouse will spend moving at minimum. This is just a base value, the actual movement
-   * will take longer depending on the number of overshoots and other randomized behavior.
-   */
-  public int getMouseMovementBaseMs() {
-    return mouseMovementBaseMs;
-  }
-
-  /**
-   * @param mouseMovementBaseMs the ms which the mouse will spend moving at minimum. This is just a base value,
-   * the actual movement will take longer depending on the number of overshoots and other randomized behavior.
-   */
-  public void setMouseMovementBaseMs(int mouseMovementBaseMs) {
-    if (mouseMovementBaseMs < MIN_MOUSE_MOVEMENT_BASE_MS) {
-      throw new IllegalArgumentException("Mouse movement base ms should be at least " + MIN_MOUSE_MOVEMENT_BASE_MS);
-    }
-    this.mouseMovementBaseMs = mouseMovementBaseMs;
+        deviationProvider, noiseProvider, systemCalls, xDest, yDest, random, mouseInfo, speedManager, overshoots);
   }
 
   /**
@@ -199,19 +173,22 @@ public class MouseMotionFactory {
   }
 
   /**
-   * Get the robot used to move the mouse
-   * @return the robot
+   * Get the speed manager. SpeedManager controls how long does it take to complete a movement and within that
+   * time how slow or fast the cursor is moving at a particular moment, defining the characteristics of movement itself,
+   * not the trajectory, but how jagged or smooth, accelerating or decelerating, the movement is.
+   * @return the SpeedManager
    */
-  public Robot getRobot() {
-    return robot;
+  public SpeedManager getSpeedManager() {
+    return speedManager;
   }
 
   /**
-   * Set the robot used to move the mouse
-   * @param robot the robot
+   * Sets the speed manager. SpeedManager controls how long does it take to complete a movement and within that
+   * time how slow or fast the cursor is moving at a particular moment, defining the characteristics of movement itself,
+   * not the trajectory, but how jagged or smooth, accelerating or decelerating, the movement is.
+   * @param speedManager the SpeedManager
    */
-  public void setRobot(Robot robot) {
-    this.robot = robot;
+  public void setSpeedManager(SpeedManager speedManager) {
+    this.speedManager = speedManager;
   }
-
 }

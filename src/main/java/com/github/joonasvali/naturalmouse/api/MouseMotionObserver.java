@@ -1,4 +1,4 @@
-package com.github.joonasvali.naturalmouse.support;
+package com.github.joonasvali.naturalmouse.api;
 
 /**
  * Use to observe mouse movement in MouseMotion

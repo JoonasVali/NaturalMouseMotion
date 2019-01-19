@@ -1,11 +1,7 @@
 package com.github.joonasvali.naturalmouse.api;
 
-import com.github.joonasvali.naturalmouse.support.DeviationProvider;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
-import com.github.joonasvali.naturalmouse.support.MouseInfoAccessor;
-import com.github.joonasvali.naturalmouse.support.MouseMotionObserver;
-import com.github.joonasvali.naturalmouse.support.NoiseProvider;
-import com.github.joonasvali.naturalmouse.support.SystemCalls;
+import com.github.joonasvali.naturalmouse.support.Speed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,22 +15,20 @@ import java.util.Random;
  */
 public class MouseMotion {
   private static final Logger log = LoggerFactory.getLogger(MouseMotion.class);
-  private static final int MOUSE_MOVEMENT_FLUCTATION_MS = 150;
   private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
   private static final int TIME_TO_STEPS_DIVIDER = 8;
   private static final int MIN_STEPS = 10;
   private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.8;
   private static final int MIN_OVERSHOOT_MOVEMENT_MS = 40;
-  public static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
-  private final long mouseMovementBaseMs;
+  private static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
   private final Dimension screenSize;
   private final SystemCalls systemCalls;
   private final DeviationProvider deviationProvider;
   private final NoiseProvider noiseProvider;
+  private final SpeedManager speedManager;
   private final int xDest;
   private final int yDest;
   private final Random random;
-  private final Robot robot;
   private final MouseInfoAccessor mouseInfo;
   private final int overshoots;
   private Point mousePosition;
@@ -46,14 +40,13 @@ public class MouseMotion {
    * @param xDest               the x-coordinate of destination
    * @param yDest               the y-coordinate of destination
    * @param random              the random used for unpredictability
-   * @param robot               the robot used for moving the mouse cursor
    * @param mouseInfo           the accessor for reading cursor position on screen
-   * @param mouseMovementBaseMs approximate time in ms it takes to finish a single trajectory. (In reality it takes longer)
+   * @param speedManager        provides speed characteristics to the movement of mouse
    * @param overshoots          the number of overshoots or false destinations the cursor makes at most, before arriving to destination
    */
   public MouseMotion(DeviationProvider deviationProvider, NoiseProvider noiseProvider, SystemCalls systemCalls,
-                     int xDest, int yDest, Random random, Robot robot, MouseInfoAccessor mouseInfo, long mouseMovementBaseMs,
-                     int overshoots) {
+                     int xDest, int yDest, Random random, MouseInfoAccessor mouseInfo,
+                     SpeedManager speedManager, int overshoots) {
     this.deviationProvider = deviationProvider;
     this.noiseProvider = noiseProvider;
     this.systemCalls = systemCalls;
@@ -61,10 +54,9 @@ public class MouseMotion {
     this.xDest = limitByScreenWidth(xDest);
     this.yDest = limitByScreenHeight(yDest);
     this.random = random;
-    this.robot = robot;
     this.mouseInfo = mouseInfo;
     this.overshoots = overshoots;
-    this.mouseMovementBaseMs = mouseMovementBaseMs;
+    this.speedManager = speedManager;
   }
 
   /**
@@ -88,25 +80,29 @@ public class MouseMotion {
     log.info("Starting to move mouse to ({}, {}), current position: ({}, {})", xDest, yDest, mousePosition.x, mousePosition.y);
     double initialDistance = Math.sqrt(Math.pow(xDest - mousePosition.x, 2) + Math.pow(yDest - mousePosition.y, 2));
 
-    long mouseMovementMs = this.mouseMovementBaseMs + (long) (random.nextDouble() * MOUSE_MOVEMENT_FLUCTATION_MS);
+    long mouseMovementMs = speedManager.createMouseMovementTimeMs(initialDistance);
     log.info("MouseMovementMs calculated to {} ms", mouseMovementMs);
     int overshoots = this.overshoots;
 
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
       int xDistance = xDest - mousePosition.x;
       int yDistance = yDest - mousePosition.y;
+      int currentDestinationX = xDest;
+      int currentDestinationY = yDest;
 
       double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+      Speed speed = speedManager.getSpeed(distance, mouseMovementMs);
       double speedPixelsPerSecond = distance / mouseMovementMs * 1000;
       if (overshoots > 0 && initialDistance > MIN_DISTANCE_FOR_OVERSHOOTS) {
         // Let's miss the target a bit at first.
         double randomModifier = speedPixelsPerSecond / OVERSHOOT_RANDOM_MODIFIER_DIVIDER;
-        int overshootDestX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
-        int overshootDestY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
-        xDistance = overshootDestX - mousePosition.x;
-        yDistance = overshootDestY - mousePosition.y;
+        currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
+        currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
+        xDistance = currentDestinationX - mousePosition.x;
+        yDistance = currentDestinationY - mousePosition.y;
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-        log.debug("Using overshoots ({} out of {}), aiming at ({}, {})", overshoots, this.overshoots, overshootDestX, overshootDestY);
+        log.debug("Using overshoots ({} out of {}), aiming at ({}, {})",
+            overshoots, this.overshoots, currentDestinationX, currentDestinationY);
         mouseMovementMs /= OVERSHOOT_SPEEDUP_DIVIDER;
         mouseMovementMs = Math.max(mouseMovementMs, MIN_OVERSHOOT_MOVEMENT_MS);
         overshoots--;
@@ -115,8 +111,6 @@ public class MouseMotion {
       /* Number of steps is calculated from the movement time and limited by minimal amount of steps
          (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
       int steps = (int) Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS));
-      double xStepSize = (xDistance / (double) steps);
-      double yStepSize = (yDistance / (double) steps);
 
       long startTime = systemCalls.currentTimeMillis();
       long stepTime = (long) (mouseMovementMs / (double) steps);
@@ -128,15 +122,38 @@ public class MouseMotion {
       double deviationMultiplierX = (random.nextDouble() - 0.5) * 2;
       double deviationMultiplierY = (random.nextDouble() - 0.5) * 2;
 
-
+      double completedXDistance = 0;
+      double completedYDistance = 0;
       for (int i = 0; i < steps; i++) {
-        double completion = i / (double) steps;
+        // All steps take equal amount of time. This is a value from 0...1 describing how far along the process is.
+        double timeCompletion = i / (double) steps;
+
+        double xStepSize = speed.getStepSize(xDistance, steps, timeCompletion);
+        double yStepSize = speed.getStepSize(yDistance, steps, timeCompletion);
+
+        completedXDistance += xStepSize;
+        completedYDistance += yStepSize;
+        double completedDistance = Math.sqrt(Math.pow(completedXDistance, 2) + Math.pow(completedYDistance, 2));
+        double completion = Math.min(1, completedDistance / distance);
+        log.trace("Step: x: {} y: {} tc: {} c: {}", xStepSize, yStepSize, timeCompletion, completion);
+
+        DoublePoint noise = noiseProvider.getNoise(random, xStepSize, yStepSize);
+        DoublePoint deviation = deviationProvider.getDeviation(distance, completion);
+
+        // Do last correcting step if we are in range but speed characteristic has managed to
+        // pull us a bit off from real destination.
+        if (i == steps - 1 && currentDestinationX == xDest && currentDestinationY == yDest && overshoots <= 0) {
+          // Only do it if we are in last step range, otherwise let it just loop again, it will look more natural.
+          if (Math.abs(xDistance - completedXDistance) < Math.abs(xStepSize) &&
+              Math.abs(yDistance - completedYDistance) < Math.abs(yStepSize)) {
+            xStepSize = currentDestinationX - simulatedMouseX;
+            yStepSize = currentDestinationY - simulatedMouseY;
+            log.debug("Correcting step made to destination.");
+          }
+        }
 
         simulatedMouseX += xStepSize;
         simulatedMouseY += yStepSize;
-
-        DoublePoint noise = noiseProvider.getNoise(random, distance);
-        DoublePoint deviation = deviationProvider.getDeviation(distance, completion);
 
         long endTime = startTime + stepTime * (i + 1);
         int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noise.getX());
@@ -144,7 +161,8 @@ public class MouseMotion {
 
         mousePosX = limitByScreenWidth(mousePosX);
         mousePosY = limitByScreenHeight(mousePosY);
-        robot.mouseMove(
+
+        systemCalls.setMousePosition(
             mousePosX,
             mousePosY
         );
@@ -157,6 +175,7 @@ public class MouseMotion {
       }
       sleepAround(20, 120);
       updateMouseInfo();
+      log.debug("Steps completed, mouse at " + mousePosition.x + " " + mousePosition.y);
     }
     log.info("Mouse movement to ({}, {}) completed", xDest, yDest);
   }

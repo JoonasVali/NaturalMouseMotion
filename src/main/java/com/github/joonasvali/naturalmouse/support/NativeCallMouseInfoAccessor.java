@@ -1,5 +1,6 @@
 package com.github.joonasvali.naturalmouse.support;
 
+import com.github.joonasvali.naturalmouse.api.MouseInfoAccessor;
 import sun.awt.SunToolkit;
 
 import java.awt.*;

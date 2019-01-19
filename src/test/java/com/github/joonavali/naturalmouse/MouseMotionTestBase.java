@@ -1,11 +1,11 @@
 package com.github.joonavali.naturalmouse;
 
+import com.github.joonasvali.naturalmouse.api.DeviationProvider;
+import com.github.joonasvali.naturalmouse.api.MouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
-import com.github.joonasvali.naturalmouse.support.DeviationProvider;
+import com.github.joonasvali.naturalmouse.api.NoiseProvider;
+import com.github.joonasvali.naturalmouse.api.SystemCalls;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
-import com.github.joonasvali.naturalmouse.support.MouseInfoAccessor;
-import com.github.joonasvali.naturalmouse.support.NoiseProvider;
-import com.github.joonasvali.naturalmouse.support.SystemCalls;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -26,8 +26,9 @@ public class MouseMotionTestBase {
 
   @Before
   public void setup() {
+    mouse = new MockMouse();
     factory = new MouseMotionFactory();
-    systemCalls = new MockSystemCalls();
+    systemCalls = new MockSystemCalls(mouse);
     deviationProvider = new MockDeviationProvider();
     noiseProvider = new MockNoiseProvider();
     random = new MockRandom();
@@ -37,14 +38,7 @@ public class MouseMotionTestBase {
     factory.setNoiseProvider(noiseProvider);
     factory.setRandom(random);
 
-    try {
-      mouse = new MockMouse();
-    } catch (AWTException e) {
-      throw new RuntimeException(e);
-    }
-
     factory.setMouseInfo(mouse);
-    factory.setRobot(mouse);
   }
 
   protected void assertMousePosition(int x, int y) {
@@ -54,6 +48,12 @@ public class MouseMotionTestBase {
   }
 
   protected class MockSystemCalls implements SystemCalls {
+    private final MockMouse mockMouse;
+
+    public MockSystemCalls(MockMouse mockMouse) {
+      this.mockMouse = mockMouse;
+    }
+
     @Override
     public long currentTimeMillis() {
       return 0;
@@ -68,6 +68,11 @@ public class MouseMotionTestBase {
     public Dimension getScreenSize() {
       return new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
+
+    @Override
+    public void setMousePosition(int x, int y) {
+      mockMouse.mouseMove(x, y);
+    }
   }
 
   protected class MockDeviationProvider implements DeviationProvider {
@@ -79,19 +84,18 @@ public class MouseMotionTestBase {
 
   protected class MockNoiseProvider implements NoiseProvider {
     @Override
-    public DoublePoint getNoise(Random random, double distance) {
+    public DoublePoint getNoise(Random random, double xStepSize, double yStepSize) {
       return new DoublePoint(0, 0);
     }
   }
 
-  protected class MockMouse extends Robot implements MouseInfoAccessor {
+  protected class MockMouse implements MouseInfoAccessor {
     private final ArrayList<Point> mouseMovements = new ArrayList<>();
 
-    MockMouse() throws AWTException {
+    MockMouse() {
       mouseMovements.add(new Point(0, 0));
     }
 
-    @Override
     public synchronized void mouseMove(int x, int y) {
       mouseMovements.add(new Point(x, y));
     }
