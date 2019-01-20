@@ -9,7 +9,7 @@ import java.util.List;
 public class DefaultSpeedManager implements SpeedManager {
 
   private final List<Speed> speeds = new ArrayList<>();
-  private int mouseMovementSpeedMs = 500;
+  private int mouseMovementTimeMs = 500;
 
   public DefaultSpeedManager(Collection<Speed> speeds) {
     this.speeds.addAll(speeds);
@@ -37,14 +37,14 @@ public class DefaultSpeedManager implements SpeedManager {
    */
   @Override
   public long createMouseMovementTimeMs(double distance) {
-    return mouseMovementSpeedMs + (long)(Math.random() * mouseMovementSpeedMs);
+    return mouseMovementTimeMs + (long)(Math.random() * mouseMovementTimeMs);
   }
 
-  public int getMouseMovementSpeedMs() {
-    return mouseMovementSpeedMs;
+  public int getMouseMovementBaseTimeMs() {
+    return mouseMovementTimeMs;
   }
 
-  public void setMouseMovementSpeedMs(int mouseMovementSpeedMs) {
-    this.mouseMovementSpeedMs = mouseMovementSpeedMs;
+  public void setMouseMovementBaseTimeMs(int mouseMovementSpeedMs) {
+    this.mouseMovementTimeMs = mouseMovementSpeedMs;
   }
 }

@@ -75,35 +75,46 @@ public class Speed {
     // so we can expect next 'completion' is current completion + completionStep
     double completionStep = 1d / steps;
     // Define the first bucket we read from
-    int bucketFrom = (int) (completion * buckets.length);
-    // Define the last bucket we read from.
-    int bucketUntil = Math.max(bucketFrom, (int) ((completion + completionStep) * buckets.length - 1));
-    /* First we get the distance / steps, which is distance per step: DPS.
-     *   This is what we would essentially return from this method on constant speed:
-     *     "A distance we need to move the mouse for this step."
-     *   However the idea is not to have constant speed, so we proceed further.
-     *   Every next step the 'distance' and 'steps' passed to this method will be the same,
-     *   so we would get the same result and continue returning constant value until completion reaches value '1'
-     *   it would also turn out to be an average step size, and we will use that fact in the name of the variable
-     *   this gets assigned to and in the following logic.
-     *
-     * Then we divide DPS by the number of buckets we read from this step (bucketUntil - bucketFrom + 1).
-     * Then we have a value which is DPS per bucket.
-     * Its essentially an average distance per step divided per buckets read.
-     */
-    double averageSpeedPerBucket = distance / steps / (bucketUntil - bucketFrom + 1);
+    double bucketFrom = (completion * buckets.length);
+    // Define the last bucket we read from
+    double bucketUntil = ((completion + completionStep) * buckets.length);
 
-    /* We will now read the mentioned buckets and divide their content by AVERAGE_BUCKET_VALUE = 100,
-     * this gives a multiplier for averageSpeedPerBucket, which we multiply and sum the result to speed.
-     *
-     * The resulting value is speed with the properties read from the bucket, so when the values at
-     * buckets are lower than AVERAGE_BUCKET_VALUE the speed is lower than average and when higher than average
-     * the resulting speed, as well, is higher than average speed.
-     */
-    double speed = 0;
-    for (int i = bucketFrom; i <= bucketUntil; i++) {
-      speed += buckets[i] / AVERAGE_BUCKET_VALUE * averageSpeedPerBucket;
+    double bucketContents = getBucketsContents(bucketFrom, bucketUntil);
+    // This shows how much distance is assigned to single contents value in the buckets.
+    // For example if this gets assigned to 0.4, then for every value in the bucket
+    // the cursor needs to travel 0.4 pixels, so for a bucket containing 50, the mouse
+    // travelling distance is 0.4 * 50 = 20pixels
+    double distancePerBucketContent = distance / (buckets.length * AVERAGE_BUCKET_VALUE);
+
+    return bucketContents * distancePerBucketContent;
+  }
+
+  /**
+   * Summarizes the bucket contents from bucketFrom to bucketUntil, where
+   * provided parameters may have decimal places. In that case the value
+   * from first or last bucket is just a part of it's full value, depending how
+   * large portion the decimal place contains. For example getBucketContents(0.5, 2.4)
+   * returns 0.5 * bucket[0] + 1 * bucket[1] + 0.4 * bucket[2]
+   * @param bucketFrom bucket from where to start reading
+   * @param bucketUntil bucket where to read
+   * @return the sum of the contents in the buckets
+   */
+  private double getBucketsContents(double bucketFrom, double bucketUntil) {
+    double sum = 0;
+    for (int i = (int)bucketFrom; i < bucketUntil; i++) {
+      double value = buckets[i];
+      double endMultiplier = 1;
+      double startMultiplier = 0;
+      if (bucketUntil < i+1) {
+        endMultiplier = bucketUntil - (int)bucketUntil;
+      }
+      if ((int)bucketFrom == i) {
+        startMultiplier = bucketFrom - (int)bucketFrom;
+      }
+      value *= endMultiplier - startMultiplier;
+      sum += value;
     }
-    return speed;
+
+    return sum;
   }
 }

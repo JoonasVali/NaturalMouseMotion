@@ -110,7 +110,7 @@ public class MouseMotion {
 
       /* Number of steps is calculated from the movement time and limited by minimal amount of steps
          (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
-      int steps = (int) Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS));
+      int steps = (int) Math.ceil(Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS)));
 
       long startTime = systemCalls.currentTimeMillis();
       long stepTime = (long) (mouseMovementMs / (double) steps);
@@ -139,18 +139,6 @@ public class MouseMotion {
 
         DoublePoint noise = noiseProvider.getNoise(random, xStepSize, yStepSize);
         DoublePoint deviation = deviationProvider.getDeviation(distance, completion);
-
-        // Do last correcting step if we are in range but speed characteristic has managed to
-        // pull us a bit off from real destination.
-        if (i == steps - 1 && currentDestinationX == xDest && currentDestinationY == yDest && overshoots <= 0) {
-          // Only do it if we are in last step range, otherwise let it just loop again, it will look more natural.
-          if (Math.abs(xDistance - completedXDistance) < Math.abs(xStepSize) &&
-              Math.abs(yDistance - completedYDistance) < Math.abs(yStepSize)) {
-            xStepSize = currentDestinationX - simulatedMouseX;
-            yStepSize = currentDestinationY - simulatedMouseY;
-            log.debug("Correcting step made to destination.");
-          }
-        }
 
         simulatedMouseX += xStepSize;
         simulatedMouseY += yStepSize;
