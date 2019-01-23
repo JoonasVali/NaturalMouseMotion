@@ -150,7 +150,6 @@ public class MouseMotion {
           // Remove noise at last step, when we are supposed to arrive at destination. // TODO make smoother
           noiseX = noiseY = 0;
         }
-        log.info("noise: " + noiseX + " " + noiseY);
 
         long endTime = startTime + stepTime * (i + 1);
         int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noiseX);
