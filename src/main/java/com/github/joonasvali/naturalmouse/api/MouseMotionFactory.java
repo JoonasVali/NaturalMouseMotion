@@ -9,8 +9,7 @@ import com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider;
 import java.awt.*;
 import java.util.Random;
 
-import static com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider.DEFAULT_CHANCE_OF_NOISE;
-import static com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider.DEFAULT_DISTANCE_DIVIDER;
+import static com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER;
 import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER;
 
 /**
@@ -22,7 +21,7 @@ public class MouseMotionFactory {
 
   private SystemCalls systemCalls;
   private DeviationProvider deviationProvider = new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER);
-  private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_CHANCE_OF_NOISE, DEFAULT_DISTANCE_DIVIDER);
+  private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_NOISINESS_DIVIDER);
   private SpeedManager speedManager = new DefaultSpeedManager();
 
   private Random random = new Random();

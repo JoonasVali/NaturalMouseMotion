@@ -5,26 +5,25 @@ import com.github.joonasvali.naturalmouse.api.NoiseProvider;
 import java.util.Random;
 
 public class DefaultNoiseProvider implements NoiseProvider {
-  public static final double DEFAULT_CHANCE_OF_NOISE = 0.1;
-  public static final double DEFAULT_DISTANCE_DIVIDER = 30;
-  private final double chanceOfNoise;
-  private final double distanceDivider;
+  public static final double DEFAULT_NOISINESS_DIVIDER = 2;
+  private final double noisinessDivider;
 
   /**
-   * @param chanceOfNoise a value between 0 and 1, both included
+   * @param noisinessDivider bigger value means less noise.
    */
-  public DefaultNoiseProvider(double chanceOfNoise, double distanceDivider) {
-    this.chanceOfNoise = chanceOfNoise;
-    this.distanceDivider = distanceDivider;
+  public DefaultNoiseProvider(double noisinessDivider) {
+    this.noisinessDivider = noisinessDivider;
   }
 
   @Override
   public DoublePoint getNoise(Random random, double xStepSize, double yStepSize) {
     double noiseX = 0;
     double noiseY = 0;
-    if (random.nextDouble() < chanceOfNoise) {
-      noiseX = (random.nextDouble() - 0.5) * xStepSize / distanceDivider;
-      noiseY = (random.nextDouble() - 0.5) * yStepSize / distanceDivider;
+    double stepSize = Math.sqrt(Math.pow(xStepSize, 2) + Math.pow(yStepSize, 2));
+    double noisiness = Math.max(0, (8 - stepSize)) / 50;
+    if (random.nextDouble() < noisiness) {
+      noiseX = (random.nextDouble() - 0.5) * Math.max(0, (8 - stepSize)) / noisinessDivider;
+      noiseY = (random.nextDouble() - 0.5) * Math.max(0, (8 - stepSize)) / noisinessDivider;
     }
     return new DoublePoint(noiseX, noiseY);
   }

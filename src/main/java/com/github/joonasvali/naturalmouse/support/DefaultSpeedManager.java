@@ -9,7 +9,7 @@ import java.util.List;
 public class DefaultSpeedManager implements SpeedManager {
 
   private final List<Flow> flows = new ArrayList<>();
-  private int mouseMovementTimeMs = 500;
+  private int mouseMovementTimeMs = 400;
 
   public DefaultSpeedManager(Collection<Flow> flows) {
     this.flows.addAll(flows);
@@ -21,6 +21,7 @@ public class DefaultSpeedManager implements SpeedManager {
         new Flow(FlowCharacteristics.variatingFlow()),
         new Flow(FlowCharacteristics.interruptedFlow()),
         new Flow(FlowCharacteristics.slowStartupFlow()),
+        new Flow(FlowCharacteristics.slowStartup2Flow()),
         new Flow(FlowCharacteristics.jaggedFlow())
     ));
   }

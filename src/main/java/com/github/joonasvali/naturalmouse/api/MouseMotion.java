@@ -122,6 +122,9 @@ public class MouseMotion {
 
       double completedXDistance = 0;
       double completedYDistance = 0;
+      double noiseX = 0;
+      double noiseY = 0;
+
       for (int i = 0; i < steps; i++) {
         // All steps take equal amount of time. This is a value from 0...1 describing how far along the process is.
         double timeCompletion = i / (double) steps;
@@ -138,12 +141,20 @@ public class MouseMotion {
         DoublePoint noise = noiseProvider.getNoise(random, xStepSize, yStepSize);
         DoublePoint deviation = deviationProvider.getDeviation(distance, completion);
 
+        noiseX += noise.getX();
+        noiseY += noise.getY();
         simulatedMouseX += xStepSize;
         simulatedMouseY += yStepSize;
 
+        if (i == steps - 1) {
+          // Remove noise at last step, when we are supposed to arrive at destination. // TODO make smoother
+          noiseX = noiseY = 0;
+        }
+        log.info("noise: " + noiseX + " " + noiseY);
+
         long endTime = startTime + stepTime * (i + 1);
-        int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noise.getX());
-        int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() * deviationMultiplierY + noise.getY());
+        int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noiseX);
+        int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() * deviationMultiplierY + noiseY);
 
         mousePosX = limitByScreenWidth(mousePosX);
         mousePosY = limitByScreenHeight(mousePosY);
