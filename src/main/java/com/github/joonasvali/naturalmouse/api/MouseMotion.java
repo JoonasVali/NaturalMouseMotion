@@ -1,7 +1,7 @@
 package com.github.joonasvali.naturalmouse.api;
 
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
-import com.github.joonasvali.naturalmouse.support.Speed;
+import com.github.joonasvali.naturalmouse.support.Flow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ public class MouseMotion {
    * @param yDest               the y-coordinate of destination
    * @param random              the random used for unpredictability
    * @param mouseInfo           the accessor for reading cursor position on screen
-   * @param speedManager        provides speed characteristics to the movement of mouse
+   * @param speedManager        provides flow characteristics and speed to the movement of mouse
    * @param overshoots          the number of overshoots or false destinations the cursor makes at most, before arriving to destination
    */
   public MouseMotion(DeviationProvider deviationProvider, NoiseProvider noiseProvider, SystemCalls systemCalls,
@@ -87,17 +87,15 @@ public class MouseMotion {
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
       int xDistance = xDest - mousePosition.x;
       int yDistance = yDest - mousePosition.y;
-      int currentDestinationX = xDest;
-      int currentDestinationY = yDest;
 
       double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-      Speed speed = speedManager.getSpeed(distance, mouseMovementMs);
+      Flow flow = speedManager.getFlow(distance, mouseMovementMs);
       double speedPixelsPerSecond = distance / mouseMovementMs * 1000;
       if (overshoots > 0 && initialDistance > MIN_DISTANCE_FOR_OVERSHOOTS) {
         // Let's miss the target a bit at first.
         double randomModifier = speedPixelsPerSecond / OVERSHOOT_RANDOM_MODIFIER_DIVIDER;
-        currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
-        currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
+        int currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
+        int currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
         xDistance = currentDestinationX - mousePosition.x;
         yDistance = currentDestinationY - mousePosition.y;
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
@@ -128,8 +126,8 @@ public class MouseMotion {
         // All steps take equal amount of time. This is a value from 0...1 describing how far along the process is.
         double timeCompletion = i / (double) steps;
 
-        double xStepSize = speed.getStepSize(xDistance, steps, timeCompletion);
-        double yStepSize = speed.getStepSize(yDistance, steps, timeCompletion);
+        double xStepSize = flow.getStepSize(xDistance, steps, timeCompletion);
+        double yStepSize = flow.getStepSize(yDistance, steps, timeCompletion);
 
         completedXDistance += xStepSize;
         completedYDistance += yStepSize;

@@ -174,8 +174,7 @@ public class MouseMotionFactory {
 
   /**
    * Get the speed manager. SpeedManager controls how long does it take to complete a movement and within that
-   * time how slow or fast the cursor is moving at a particular moment, defining the characteristics of movement itself,
-   * not the trajectory, but how jagged or smooth, accelerating or decelerating, the movement is.
+   * time how slow or fast the cursor is moving at a particular moment, the flow of movement.
    * @return the SpeedManager
    */
   public SpeedManager getSpeedManager() {
@@ -184,8 +183,7 @@ public class MouseMotionFactory {
 
   /**
    * Sets the speed manager. SpeedManager controls how long does it take to complete a movement and within that
-   * time how slow or fast the cursor is moving at a particular moment, defining the characteristics of movement itself,
-   * not the trajectory, but how jagged or smooth, accelerating or decelerating, the movement is.
+   * time how slow or fast the cursor is moving at a particular moment, the flow of movement.
    * @param speedManager the SpeedManager
    */
   public void setSpeedManager(SpeedManager speedManager) {

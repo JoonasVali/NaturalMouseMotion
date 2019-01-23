@@ -8,26 +8,26 @@ import java.util.Collection;
 import java.util.List;
 public class DefaultSpeedManager implements SpeedManager {
 
-  private final List<Speed> speeds = new ArrayList<>();
+  private final List<Flow> flows = new ArrayList<>();
   private int mouseMovementTimeMs = 500;
 
-  public DefaultSpeedManager(Collection<Speed> speeds) {
-    this.speeds.addAll(speeds);
+  public DefaultSpeedManager(Collection<Flow> flows) {
+    this.flows.addAll(flows);
   }
 
   public DefaultSpeedManager() {
     this(Arrays.asList(
-        new Speed(SpeedCharacteristics.constantSpeed()),
-        new Speed(SpeedCharacteristics.variatingSpeed()),
-        new Speed(SpeedCharacteristics.interruptedSpeed()),
-        new Speed(SpeedCharacteristics.slowStartupSpeed()),
-        new Speed(SpeedCharacteristics.jaggedSpeed())
+        new Flow(FlowCharacteristics.constantSpeed()),
+        new Flow(FlowCharacteristics.variatingFlow()),
+        new Flow(FlowCharacteristics.interruptedFlow()),
+        new Flow(FlowCharacteristics.slowStartupFlow()),
+        new Flow(FlowCharacteristics.jaggedFlow())
     ));
   }
 
   @Override
-  public Speed getSpeed(double distance, long plannedMouseMovementTimeMs) {
-    return speeds.get((int) (Math.random() * speeds.size()));
+  public Flow getFlow(double distance, long plannedMouseMovementTimeMs) {
+    return flows.get((int) (Math.random() * flows.size()));
   }
 
   /**
