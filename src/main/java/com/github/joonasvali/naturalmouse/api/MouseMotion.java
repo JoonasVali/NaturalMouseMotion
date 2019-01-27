@@ -21,6 +21,7 @@ public class MouseMotion {
   private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.8;
   private static final int MIN_OVERSHOOT_MOVEMENT_MS = 40;
   private static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
+  private static final int EFFECT_FADE_STEPS = 15;
   private final Dimension screenSize;
   private final SystemCalls systemCalls;
   private final DeviationProvider deviationProvider;
@@ -129,6 +130,10 @@ public class MouseMotion {
         // All steps take equal amount of time. This is a value from 0...1 describing how far along the process is.
         double timeCompletion = i / (double) steps;
 
+        double effectFade = Math.max(i - (steps - EFFECT_FADE_STEPS), 0);
+        // value from 0 to 1, when EFFECT_FADE_STEPS remaining steps, starts to decrease to 0 linearly
+        double effectFadeMultiplier = (EFFECT_FADE_STEPS - effectFade) / EFFECT_FADE_STEPS;
+
         double xStepSize = flow.getStepSize(xDistance, steps, timeCompletion);
         double yStepSize = flow.getStepSize(yDistance, steps, timeCompletion);
 
@@ -146,14 +151,13 @@ public class MouseMotion {
         simulatedMouseX += xStepSize;
         simulatedMouseY += yStepSize;
 
-        if (i == steps - 1) {
-          // Remove noise at last step, when we are supposed to arrive at destination. // TODO make smoother
-          noiseX = noiseY = 0;
-        }
-
         long endTime = startTime + stepTime * (i + 1);
-        int mousePosX = (int) Math.round(simulatedMouseX + deviation.getX() * deviationMultiplierX + noiseX);
-        int mousePosY = (int) Math.round(simulatedMouseY + deviation.getY() * deviationMultiplierY + noiseY);
+        int mousePosX = (int) Math.round(simulatedMouseX +
+            deviation.getX() * deviationMultiplierX * effectFadeMultiplier +
+            noiseX * effectFadeMultiplier);
+        int mousePosY = (int) Math.round(simulatedMouseY +
+            deviation.getY() * deviationMultiplierY * effectFadeMultiplier +
+            noiseY * effectFadeMultiplier);
 
         mousePosX = limitByScreenWidth(mousePosX);
         mousePosY = limitByScreenHeight(mousePosY);

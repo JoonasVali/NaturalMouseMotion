@@ -92,7 +92,7 @@ public class Flow {
   /**
    * Summarizes the bucket contents from bucketFrom to bucketUntil, where
    * provided parameters may have decimal places. In that case the value
-   * from first or last bucket is just a part of it's full value, depending how
+   * from first or last bucket is just a fragment of it's full value, depending how
    * large portion the decimal place contains. For example getBucketContents(0.6, 2.4)
    * returns 0.4 * bucket[0] + 1 * bucket[1] + 0.4 * bucket[2]
    * @param bucketFrom bucket from where to start reading
