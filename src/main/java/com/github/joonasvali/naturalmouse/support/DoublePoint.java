@@ -1,6 +1,7 @@
 package com.github.joonasvali.naturalmouse.support;
 
 public class DoublePoint {
+  public final static DoublePoint ZERO = new DoublePoint(0, 0);
   private final double x;
   private final double y;
 

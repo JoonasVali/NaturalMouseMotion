@@ -10,7 +10,7 @@ import java.util.List;
 public class DefaultSpeedManager implements SpeedManager {
 
   private final List<Flow> flows = new ArrayList<>();
-  private int mouseMovementTimeMs = 400;
+  private long mouseMovementTimeMs = 400;
 
   public DefaultSpeedManager(Collection<Flow> flows) {
     this.flows.addAll(flows);
@@ -42,11 +42,11 @@ public class DefaultSpeedManager implements SpeedManager {
     return mouseMovementTimeMs + (long)(Math.random() * mouseMovementTimeMs);
   }
 
-  public int getMouseMovementBaseTimeMs() {
+  public long getMouseMovementBaseTimeMs() {
     return mouseMovementTimeMs;
   }
 
-  public void setMouseMovementBaseTimeMs(int mouseMovementSpeedMs) {
+  public void setMouseMovementBaseTimeMs(long mouseMovementSpeedMs) {
     this.mouseMovementTimeMs = mouseMovementSpeedMs;
   }
 }
