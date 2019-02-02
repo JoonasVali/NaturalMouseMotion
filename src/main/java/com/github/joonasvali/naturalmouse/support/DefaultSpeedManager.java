@@ -1,6 +1,7 @@
 package com.github.joonasvali.naturalmouse.support;
 
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
+import com.github.joonasvali.naturalmouse.util.FlowCharacteristics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
