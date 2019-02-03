@@ -1,6 +1,7 @@
 package com.github.joonasvali.naturalmouse.api;
 
 import com.github.joonasvali.naturalmouse.support.Flow;
+import com.github.joonasvali.naturalmouse.util.Pair;
 
 /**
  * SpeedManager controls how long does it take to complete a mouse movement and within that
@@ -8,18 +9,11 @@ import com.github.joonasvali.naturalmouse.support.Flow;
  * Flow controls how jagged or smooth, accelerating or decelerating, the movement is.
  */
 public interface SpeedManager {
-  /**
-   * Get the Flow object which matches the provided distance and expected time planned for cursor movement.
-   * @param distance the distance from where the cursor is now to the destination point
-   * @param plannedMouseMovementTimeMs how long does it take to complete this cursor movement
-   * @return the appropriate Flow object, where match is a SpeedManager implementation decision.
-   */
-  Flow getFlow(double distance, long plannedMouseMovementTimeMs);
 
   /**
-   * Calculate the time which should be spent on moving cursor the given distance
-   * @param distance the distance in pixels
-   * @return the calculated time in ms.
+   * Get the SpeedFlow object, which contains Flow and planned time for mouse movement in ms.
+   * @param distance the distance from where the cursor is now to the destination point   *
+   * @return the SpeedFlow object, which details are a SpeedManager implementation decision.
    */
-  long createMouseMovementTimeMs(double distance);
+  Pair<Flow, Long> getFlowWithTime(double distance);
 }

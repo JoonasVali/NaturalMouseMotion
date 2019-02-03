@@ -80,7 +80,6 @@ public class FlowUtilTest {
   public void testStretchFlow_3to6() {
     double[] flow = {1, 2, 3};
     double[] result = FlowUtil.stretchFlow(flow, 6);
-    System.out.println(Arrays.toString(result));
     Assert.assertArrayEquals(result,
         new double[]{
             1.047619, 1.428571, 1.809523,

@@ -18,7 +18,7 @@ public class DefaultNoiseProvider implements NoiseProvider {
 
   @Override
   public DoublePoint getNoise(Random random, double xStepSize, double yStepSize) {
-    if (xStepSize - 0 < SMALL_DELTA && yStepSize - 0 < SMALL_DELTA) {
+    if (Math.abs(xStepSize - 0) < SMALL_DELTA && Math.abs(yStepSize - 0) < SMALL_DELTA) {
       return DoublePoint.ZERO;
     }
     double noiseX = 0;

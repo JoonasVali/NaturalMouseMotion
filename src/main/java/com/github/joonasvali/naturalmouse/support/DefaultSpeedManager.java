@@ -2,15 +2,16 @@ package com.github.joonasvali.naturalmouse.support;
 
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
 import com.github.joonasvali.naturalmouse.util.FlowTemplates;
+import com.github.joonasvali.naturalmouse.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 public class DefaultSpeedManager implements SpeedManager {
-
+  private static final double SMALL_DELTA = 10e-6;
   private final List<Flow> flows = new ArrayList<>();
-  private long mouseMovementTimeMs = 400;
+  private long mouseMovementTimeMs = 700;
 
   public DefaultSpeedManager(Collection<Flow> flows) {
     this.flows.addAll(flows);
@@ -29,22 +30,20 @@ public class DefaultSpeedManager implements SpeedManager {
   }
 
   @Override
-  public Flow getFlow(double distance, long plannedMouseMovementTimeMs) {
-    return flows.get((int) (Math.random() * flows.size()));
-  }
+  public Pair<Flow, Long> getFlowWithTime(double distance) {
+    double time = mouseMovementTimeMs + (long)(Math.random() * mouseMovementTimeMs);
+    Flow flow = flows.get((int) (Math.random() * flows.size()));
 
-  /**
-   * @param distance the distance between mouse cursor and target pixel
-   * @return mouse movement time in ms approximate time in ms it should take to finish a single trajectory.
-   * (In reality it takes longer)
-   */
-  @Override
-  public long createMouseMovementTimeMs(double distance) {
-    return mouseMovementTimeMs + (long)(Math.random() * mouseMovementTimeMs);
-  }
+    // Let's ignore waiting time, e.g 0's in flow, by increasing the total time
+    // by the amount of 0's there are in the flow multiplied by the time each bucket represents.
+    double timePerBucket = time / (double)flow.getFlowCharacteristics().length;
+    for (double bucket : flow.getFlowCharacteristics()) {
+      if (Math.abs(bucket - 0) < SMALL_DELTA) {
+        time += timePerBucket;
+      }
+    }
 
-  public long getMouseMovementBaseTimeMs() {
-    return mouseMovementTimeMs;
+    return new Pair<>(flow, (long)time);
   }
 
   public void setMouseMovementBaseTimeMs(long mouseMovementSpeedMs) {

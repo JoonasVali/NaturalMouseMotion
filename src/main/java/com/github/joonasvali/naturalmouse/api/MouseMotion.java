@@ -3,6 +3,7 @@ package com.github.joonasvali.naturalmouse.api;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
 import com.github.joonasvali.naturalmouse.support.Flow;
 import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
+import com.github.joonasvali.naturalmouse.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,9 +86,6 @@ public class MouseMotion {
     updateMouseInfo();
     log.info("Starting to move mouse to ({}, {}), current position: ({}, {})", xDest, yDest, mousePosition.x, mousePosition.y);
     double initialDistance = Math.sqrt(Math.pow(xDest - mousePosition.x, 2) + Math.pow(yDest - mousePosition.y, 2));
-
-    long mouseMovementMs = speedManager.createMouseMovementTimeMs(initialDistance);
-    log.info("MouseMovementMs calculated to {} ms", mouseMovementMs);
     int overshoots = this.overshoots;
 
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
@@ -95,7 +93,10 @@ public class MouseMotion {
       int yDistance = yDest - mousePosition.y;
 
       double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-      Flow flow = speedManager.getFlow(distance, mouseMovementMs);
+      Pair<Flow, Long> flowTime = speedManager.getFlowWithTime(distance);
+      Flow flow = flowTime.x;
+      long mouseMovementMs = flowTime.y;
+      log.info("MouseMovementMs calculated to {} ms", mouseMovementMs);
       double speedPixelsPerSecond = distance / mouseMovementMs * 1000;
       if (overshoots > 0 && initialDistance > minDistanceForOvershoots) {
         // Let's miss the target a bit at first.
