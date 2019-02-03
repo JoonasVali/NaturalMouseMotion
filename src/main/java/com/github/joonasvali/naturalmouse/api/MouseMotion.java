@@ -173,8 +173,10 @@ public class MouseMotion {
         long timeLeft = endTime - systemCalls.currentTimeMillis();
         sleepAround(Math.max(timeLeft, 0), 0);
       }
-      sleepAround(20, 120);
       updateMouseInfo();
+      if (mousePosition.x != xDest || mousePosition.y != yDest) {
+        sleepAround(20, 120);
+      }
       log.debug("Steps completed, mouse at " + mousePosition.x + " " + mousePosition.y);
     }
     log.info("Mouse movement to ({}, {}) completed", xDest, yDest);
