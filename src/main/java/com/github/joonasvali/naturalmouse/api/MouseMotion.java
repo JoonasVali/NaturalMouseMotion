@@ -2,6 +2,7 @@ package com.github.joonasvali.naturalmouse.api;
 
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
 import com.github.joonasvali.naturalmouse.support.Flow;
+import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,13 +16,15 @@ import java.util.Random;
  */
 public class MouseMotion {
   private static final Logger log = LoggerFactory.getLogger(MouseMotion.class);
-  private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
-  private static final int TIME_TO_STEPS_DIVIDER = 8;
-  private static final int MIN_STEPS = 10;
-  private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.8;
-  private static final int MIN_OVERSHOOT_MOVEMENT_MS = 40;
-  private static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
-  private static final int EFFECT_FADE_STEPS = 15;
+  private final int minDistanceForOvershoots;
+  private final int minSteps;
+  private final long minOvershootMovementMs;
+  private final int effectFadeSteps;
+  private final int reactionTimeBaseMs;
+  private final int reactionTimeVariationMs;
+  private final double overshootSpeedupDivider;
+  private final double timeToStepsDivider;
+  private final double overshootRandomModifierDivider;
   private final Dimension screenSize;
   private final SystemCalls systemCalls;
   private final DeviationProvider deviationProvider;
@@ -35,29 +38,31 @@ public class MouseMotion {
   private Point mousePosition;
 
   /**
-   * @param deviationProvider   creates arc or other disfigurement in otherwise straight trajectory
-   * @param noiseProvider       creates random noise in the trajectory
-   * @param systemCalls         interface for calling static system related methods
-   * @param xDest               the x-coordinate of destination
-   * @param yDest               the y-coordinate of destination
-   * @param random              the random used for unpredictability
-   * @param mouseInfo           the accessor for reading cursor position on screen
-   * @param speedManager        provides flow characteristics and speed to the movement of mouse
-   * @param overshoots          the number of overshoots or false destinations the cursor makes at most, before arriving to destination
+   * @param nature the nature that defines how mouse is moved
+   * @param xDest  the x-coordinate of destination
+   * @param yDest  the y-coordinate of destination
+   * @param random the random used for unpredictability
    */
-  public MouseMotion(DeviationProvider deviationProvider, NoiseProvider noiseProvider, SystemCalls systemCalls,
-                     int xDest, int yDest, Random random, MouseInfoAccessor mouseInfo,
-                     SpeedManager speedManager, int overshoots) {
-    this.deviationProvider = deviationProvider;
-    this.noiseProvider = noiseProvider;
-    this.systemCalls = systemCalls;
+  public MouseMotion(MouseMotionNature nature, Random random, int xDest, int yDest) {
+    this.deviationProvider = nature.getDeviationProvider();
+    this.noiseProvider = nature.getNoiseProvider();
+    this.systemCalls = nature.getSystemCalls();
     this.screenSize = systemCalls.getScreenSize();
     this.xDest = limitByScreenWidth(xDest);
     this.yDest = limitByScreenHeight(yDest);
     this.random = random;
-    this.mouseInfo = mouseInfo;
-    this.overshoots = overshoots;
-    this.speedManager = speedManager;
+    this.mouseInfo = nature.getMouseInfo();
+    this.overshoots = nature.getOvershoots();
+    this.speedManager = nature.getSpeedManager();
+    this.minDistanceForOvershoots = nature.getMinDistanceForOvershoots();
+    this.timeToStepsDivider = nature.getTimeToStepsDivider();
+    this.minSteps = nature.getMinSteps();
+    this.minOvershootMovementMs = nature.getMinOvershootMovementMs();
+    this.overshootSpeedupDivider = nature.getOvershootSpeedupDivider();
+    this.effectFadeSteps = nature.getEffectFadeSteps();
+    this.reactionTimeBaseMs = nature.getReactionTimeBaseMs();
+    this.reactionTimeVariationMs = nature.getReactionTimeVariationMs();
+    this.overshootRandomModifierDivider = nature.getOvershootRandomModifierDivider();
   }
 
   /**
@@ -92,9 +97,9 @@ public class MouseMotion {
       double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
       Flow flow = speedManager.getFlow(distance, mouseMovementMs);
       double speedPixelsPerSecond = distance / mouseMovementMs * 1000;
-      if (overshoots > 0 && initialDistance > MIN_DISTANCE_FOR_OVERSHOOTS) {
+      if (overshoots > 0 && initialDistance > minDistanceForOvershoots) {
         // Let's miss the target a bit at first.
-        double randomModifier = speedPixelsPerSecond / OVERSHOOT_RANDOM_MODIFIER_DIVIDER;
+        double randomModifier = speedPixelsPerSecond / overshootRandomModifierDivider;
         int currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
         int currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
         xDistance = currentDestinationX - mousePosition.x;
@@ -102,14 +107,14 @@ public class MouseMotion {
         distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
         log.debug("Using overshoots ({} out of {}), aiming at ({}, {})",
             overshoots, this.overshoots, currentDestinationX, currentDestinationY);
-        mouseMovementMs /= OVERSHOOT_SPEEDUP_DIVIDER;
-        mouseMovementMs = Math.max(mouseMovementMs, MIN_OVERSHOOT_MOVEMENT_MS);
+        mouseMovementMs /= overshootSpeedupDivider;
+        mouseMovementMs = Math.max(mouseMovementMs, minOvershootMovementMs);
         overshoots--;
       }
 
       /* Number of steps is calculated from the movement time and limited by minimal amount of steps
          (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
-      int steps = (int) Math.ceil(Math.min(distance, Math.max(mouseMovementMs / TIME_TO_STEPS_DIVIDER, MIN_STEPS)));
+      int steps = (int) Math.ceil(Math.min(distance, Math.max(mouseMovementMs / timeToStepsDivider, minSteps)));
 
       long startTime = systemCalls.currentTimeMillis();
       long stepTime = (long) (mouseMovementMs / (double) steps);
@@ -130,9 +135,9 @@ public class MouseMotion {
         // All steps take equal amount of time. This is a value from 0...1 describing how far along the process is.
         double timeCompletion = i / (double) steps;
 
-        double effectFade = Math.max(i - (steps - EFFECT_FADE_STEPS), 0);
+        double effectFade = Math.max(i - (steps - effectFadeSteps), 0);
         // value from 0 to 1, when EFFECT_FADE_STEPS remaining steps, starts to decrease to 0 linearly
-        double effectFadeMultiplier = (EFFECT_FADE_STEPS - effectFade) / EFFECT_FADE_STEPS;
+        double effectFadeMultiplier = (effectFadeSteps - effectFade) / effectFadeSteps;
 
         double xStepSize = flow.getStepSize(xDistance, steps, timeCompletion);
         double yStepSize = flow.getStepSize(yDistance, steps, timeCompletion);
@@ -175,7 +180,7 @@ public class MouseMotion {
       }
       updateMouseInfo();
       if (mousePosition.x != xDest || mousePosition.y != yDest) {
-        sleepAround(20, 120);
+        sleepAround(reactionTimeBaseMs, reactionTimeVariationMs);
       }
       log.debug("Steps completed, mouse at " + mousePosition.x + " " + mousePosition.y);
     }

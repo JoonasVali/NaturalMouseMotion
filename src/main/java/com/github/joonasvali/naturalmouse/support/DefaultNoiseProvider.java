@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class DefaultNoiseProvider implements NoiseProvider {
   public static final double DEFAULT_NOISINESS_DIVIDER = 2;
+  private static final double SMALL_DELTA = 10e-6;
   private final double noisinessDivider;
 
   /**
@@ -17,6 +18,9 @@ public class DefaultNoiseProvider implements NoiseProvider {
 
   @Override
   public DoublePoint getNoise(Random random, double xStepSize, double yStepSize) {
+    if (xStepSize - 0 < SMALL_DELTA && yStepSize - 0 < SMALL_DELTA) {
+      return DoublePoint.ZERO;
+    }
     double noiseX = 0;
     double noiseY = 0;
     double stepSize = Math.sqrt(Math.pow(xStepSize, 2) + Math.pow(yStepSize, 2));

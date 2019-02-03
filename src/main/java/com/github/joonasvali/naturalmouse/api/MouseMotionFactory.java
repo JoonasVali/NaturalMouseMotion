@@ -1,16 +1,9 @@
 package com.github.joonasvali.naturalmouse.api;
 
-import com.github.joonasvali.naturalmouse.support.DefaultMouseInfoAccessor;
-import com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider;
-import com.github.joonasvali.naturalmouse.support.DefaultSpeedManager;
-import com.github.joonasvali.naturalmouse.support.DefaultSystemCalls;
-import com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider;
+import com.github.joonasvali.naturalmouse.support.DefaultMouseMotionNature;
+import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
 
-import java.awt.*;
 import java.util.Random;
-
-import static com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER;
-import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER;
 
 /**
  * This class should be used for creating new MouseMotion-s
@@ -18,22 +11,15 @@ import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProv
  */
 public class MouseMotionFactory {
   private static final MouseMotionFactory defaultFactory = new MouseMotionFactory();
-
-  private SystemCalls systemCalls;
-  private DeviationProvider deviationProvider = new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER);
-  private NoiseProvider noiseProvider = new DefaultNoiseProvider(DEFAULT_NOISINESS_DIVIDER);
-  private SpeedManager speedManager = new DefaultSpeedManager();
-
+  private MouseMotionNature nature;
   private Random random = new Random();
-  private MouseInfoAccessor mouseInfo = new DefaultMouseInfoAccessor();
-  private int overshoots = 4;
+
+  public MouseMotionFactory(MouseMotionNature nature) {
+    this.nature = nature;
+  }
 
   public MouseMotionFactory() {
-    try {
-      systemCalls = new DefaultSystemCalls(new Robot());
-    } catch (AWTException e) {
-      throw new RuntimeException(e);
-    }
+    this(new DefaultMouseMotionNature());
   }
 
   /**
@@ -45,12 +31,12 @@ public class MouseMotionFactory {
    * current position, not from the position where mouse was during building.)
    */
   public MouseMotion build(int xDest, int yDest) {
-    return new MouseMotion(
-        deviationProvider, noiseProvider, systemCalls, xDest, yDest, random, mouseInfo, speedManager, overshoots);
+    return new MouseMotion(nature, random, xDest, yDest);
   }
 
   /**
    * Start moving the mouse to specified location. Blocks until done.
+   *
    * @param xDest the end position x-coordinate for the mouse
    * @param yDest the end position y-coordinate for the mouse
    * @throws InterruptedException if something interrupts the thread.
@@ -61,6 +47,7 @@ public class MouseMotionFactory {
 
   /**
    * Get the default factory implementation.
+   *
    * @return the factory
    */
   public static MouseMotionFactory getDefault() {
@@ -68,55 +55,50 @@ public class MouseMotionFactory {
   }
 
   /**
-   * Get a system call interface, which MouseMotion uses internally
-   * @return the interface
+   * see {@link MouseMotionNature#getSystemCalls()}
    */
   public SystemCalls getSystemCalls() {
-    return systemCalls;
+    return nature.getSystemCalls();
   }
 
   /**
-   * Set a system call interface, which MouseMotion uses internally
-   * @param systemCalls the interface
+   * see {@link MouseMotionNature#setSystemCalls(SystemCalls)}
    */
   public void setSystemCalls(SystemCalls systemCalls) {
-    this.systemCalls = systemCalls;
+    nature.setSystemCalls(systemCalls);
   }
 
   /**
-   * Get the provider which is used to define how the MouseMotion trajectory is being deviated or arced
-   * @return the provider
+   * see {@link MouseMotionNature#getDeviationProvider()}
    */
   public DeviationProvider getDeviationProvider() {
-    return deviationProvider;
+    return nature.getDeviationProvider();
   }
 
   /**
-   * Set the provider which is used to define how the MouseMotion trajectory is being deviated or arced
-   * @param deviationProvider the provider
+   * see {@link MouseMotionNature#setDeviationProvider(DeviationProvider)}
    */
   public void setDeviationProvider(DeviationProvider deviationProvider) {
-    this.deviationProvider = deviationProvider;
+    nature.setDeviationProvider(deviationProvider);
   }
 
   /**
-   * Get the provider which is used to make random mistakes in the trajectory of the moving mouse
-   * @return the provider
+   * see {@link MouseMotionNature#getNoiseProvider()}
    */
   public NoiseProvider getNoiseProvider() {
-    return noiseProvider;
+    return nature.getNoiseProvider();
   }
 
   /**
-   * set the provider which is used to make random mistakes in the trajectory of the moving mouse
-   * @param noiseProvider the provider
+   * see {@link MouseMotionNature#setNoiseProvider(NoiseProvider)}}
    */
   public void setNoiseProvider(NoiseProvider noiseProvider) {
-    this.noiseProvider = noiseProvider;
+    nature.setNoiseProvider(noiseProvider);
   }
 
   /**
    * Get the random used whenever randomized behavior is needed in MouseMotion
+   *
    * @return the random
    */
   public Random getRandom() {
@@ -125,6 +107,7 @@ public class MouseMotionFactory {
 
   /**
    * Set the random used whenever randomized behavior is needed in MouseMotion
+   *
    * @param random the random
    */
   public void setRandom(Random random) {
@@ -132,60 +115,62 @@ public class MouseMotionFactory {
   }
 
   /**
-   * Get the accessor object, which MouseMotion uses to detect the position of mouse on screen.
-   * @return the accessor
+   * see {@link MouseMotionNature#getMouseInfo()}
    */
   public MouseInfoAccessor getMouseInfo() {
-    return mouseInfo;
+    return nature.getMouseInfo();
   }
 
   /**
-   * Set the accessor object, which MouseMotion uses to detect the position of mouse on screen.
-   * @param mouseInfo
+   * see {@link MouseMotionNature#setMouseInfo(MouseInfoAccessor)}
    */
   public void setMouseInfo(MouseInfoAccessor mouseInfo) {
-    this.mouseInfo = mouseInfo;
+    nature.setMouseInfo(mouseInfo);
   }
 
   /**
-   * Get the maximum amount of overshoots the cursor does before reaching its final destination.
-   * Overshoots provide a realistic way to simulate user trying to reach the destination with mouse, but miss.
-   * This only happens when mouse is far away enough from the destination, then random points around the destination
-   * are produced which will be hit before the mouse hits the real destination. If mouse happens to accidentally hit
-   * the target close enough, then overshooting is cancelled and real destination will get reached.
-   * @return the number of maximum overshoots used
+   * see {@link MouseMotionNature#getOvershoots()}
    */
   public int getOvershoots() {
-    return overshoots;
+    return nature.getOvershoots();
   }
 
   /**
-   * Set the maximum amount of overshoots the cursor does before reaching its final destination.
-   * Overshoots provide a realistic way to simulate user trying to reach the destination with mouse, but miss.
-   * This only happens when mouse is far away enough from the destination, then random points around the destination
-   * are produced which will be hit before the mouse hits the real destination. If mouse happens to accidentally hit
-   * the target close enough, then overshooting is cancelled and real destination will get reached.   *
-   * @param overshoots the number of maximum overshoots used
+   * see {@link MouseMotionNature#setOvershoots(int)}
    */
   public void setOvershoots(int overshoots) {
-    this.overshoots = overshoots;
+    nature.setOvershoots(overshoots);
   }
 
   /**
-   * Get the speed manager. SpeedManager controls how long does it take to complete a movement and within that
-   * time how slow or fast the cursor is moving at a particular moment, the flow of movement.
-   * @return the SpeedManager
+   * see {@link MouseMotionNature#getSpeedManager()}
    */
   public SpeedManager getSpeedManager() {
-    return speedManager;
+    return nature.getSpeedManager();
   }
 
   /**
-   * Sets the speed manager. SpeedManager controls how long does it take to complete a movement and within that
-   * time how slow or fast the cursor is moving at a particular moment, the flow of movement.
-   * @param speedManager the SpeedManager
+   * see {@link MouseMotionNature#setSpeedManager(SpeedManager)}
    */
   public void setSpeedManager(SpeedManager speedManager) {
-    this.speedManager = speedManager;
+    nature.setSpeedManager(speedManager);
+  }
+
+  /**
+   * The Nature of mousemotion covers all aspects how the mouse is moved.
+   *
+   * @return the nature
+   */
+  public MouseMotionNature getNature() {
+    return nature;
+  }
+
+  /**
+   * The Nature of mousemotion covers all aspects how the mouse is moved.
+   *
+   * @param nature the new nature
+   */
+  public void setNature(MouseMotionNature nature) {
+    this.nature = nature;
   }
 }

@@ -1,7 +1,7 @@
 package com.github.joonasvali.naturalmouse.support;
 
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
-import com.github.joonasvali.naturalmouse.util.FlowCharacteristics;
+import com.github.joonasvali.naturalmouse.util.FlowTemplates;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,12 +18,13 @@ public class DefaultSpeedManager implements SpeedManager {
 
   public DefaultSpeedManager() {
     this(Arrays.asList(
-        new Flow(FlowCharacteristics.constantSpeed()),
-        new Flow(FlowCharacteristics.variatingFlow()),
-        new Flow(FlowCharacteristics.interruptedFlow()),
-        new Flow(FlowCharacteristics.slowStartupFlow()),
-        new Flow(FlowCharacteristics.slowStartup2Flow()),
-        new Flow(FlowCharacteristics.jaggedFlow())
+        new Flow(FlowTemplates.constantSpeed()),
+        new Flow(FlowTemplates.variatingFlow()),
+        new Flow(FlowTemplates.interruptedFlow()),
+        new Flow(FlowTemplates.slowStartupFlow()),
+        new Flow(FlowTemplates.slowStartup2Flow()),
+        new Flow(FlowTemplates.jaggedFlow()),
+        new Flow(FlowTemplates.stoppingFlow())
     ));
   }
 

@@ -2,7 +2,7 @@ package com.github.joonasvali.naturalmouse.util;
 
 import java.util.Arrays;
 
-public class FlowCharacteristics {
+public class FlowTemplates {
   public static double[] variatingFlow() {
     return new double[]{
         10, 13, 14, 19, 16, 13, 15, 22, 56, 90, 97, 97, 66, 51, 50, 66, 91, 95, 87, 96, 98,
@@ -51,6 +51,16 @@ public class FlowCharacteristics {
         18, 68, 82, 61, 11, 84, 37, 20, 68, 33, 36, 55, 68, 75, 56, 20, 41, 120, 63, 72, 102,
         49, 4, 48, 69, 50, 35, 49, 54, 19, 95, 121, 26, 78, 31, 62, 53, 123, 73, 22, 39, 72,
         98, 33, 26, 5, 103, 23, 75, 35, 69, 33, 44, 12, 10, 101, 122, 19,
+    };
+  }
+
+  public static double[] stoppingFlow() {
+    return new double[]{
+        8, 20, 39, 48, 66, 71, 79, 57, 29, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 6, 10, 12, 15, 19,
+        37, 60, 100, 103, 98, 82, 87, 74, 65, 51, 57, 54, 61, 46, 38, 16,
     };
   }
 
