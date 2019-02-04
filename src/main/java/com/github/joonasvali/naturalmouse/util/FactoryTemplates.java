@@ -1,6 +1,7 @@
 package com.github.joonasvali.naturalmouse.util;
 
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
+import com.github.joonasvali.naturalmouse.api.SpeedManager;
 import com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider;
 import com.github.joonasvali.naturalmouse.support.DefaultSpeedManager;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
@@ -27,10 +28,10 @@ public class FactoryTemplates {
     flows.add(new Flow(FlowTemplates.stoppingFlow()));
     DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(new SinusoidalDeviationProvider(9));
-    factory.setNoiseProvider(new DefaultNoiseProvider(1.5));
+    factory.setNoiseProvider(new DefaultNoiseProvider(1.6));
     factory.getNature().setReactionTimeBaseMs(100);
     manager.setMouseMovementBaseTimeMs(1700);
-    factory.setOvershoots(5);
+    factory.setOvershoots(3);
     factory.setSpeedManager(manager);
     return factory;
   }
@@ -38,17 +39,17 @@ public class FactoryTemplates {
   /**
    * <h1>Robotic fluent movement.</h1>
    * Custom speed, constant movement, no mistakes, no overshoots.
-   * @param motionTimeMs approximate time a movement takes
+   * @param motionTimeMsPer100Pixels approximate time a movement takes per 100 pixels of travelling
    * @return the factory
    */
-  public static MouseMotionFactory createDemoRobotMotionFactory(long motionTimeMs) {
+  public static MouseMotionFactory createDemoRobotMotionFactory(long motionTimeMsPer100Pixels) {
     MouseMotionFactory factory = new MouseMotionFactory();
-    List<Flow> flows = new ArrayList<>();
-    flows.add(new Flow(FlowTemplates.constantSpeed()));
-    DefaultSpeedManager manager = new DefaultSpeedManager(flows);
+    final Flow flow = new Flow(FlowTemplates.constantSpeed());
+    double timePerPixel = motionTimeMsPer100Pixels / 100d;
+    SpeedManager manager = distance -> new Pair<>(flow, (long)(timePerPixel * distance));
     factory.setDeviationProvider((totalDistanceInPixels, completionFraction) -> DoublePoint.ZERO);
     factory.setNoiseProvider(((random, xStepSize, yStepSize) -> DoublePoint.ZERO));
-    manager.setMouseMovementBaseTimeMs(motionTimeMs);
+
     factory.setOvershoots(0);
     factory.setSpeedManager(manager);
     return factory;
