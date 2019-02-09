@@ -3,41 +3,23 @@ package com.github.joonasvali.naturalmouse.support;
 import com.github.joonasvali.naturalmouse.api.DeviationProvider;
 import com.github.joonasvali.naturalmouse.api.MouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.api.NoiseProvider;
+import com.github.joonasvali.naturalmouse.api.OvershootManager;
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
 import com.github.joonasvali.naturalmouse.api.SystemCalls;
 
 public class MouseMotionNature {
-  private int minDistanceForOvershoots;
   private double timeToStepsDivider;
   private int minSteps;
-  private long minOvershootMovementMs;
+
   private int effectFadeSteps;
   private int reactionTimeBaseMs;
   private int reactionTimeVariationMs;
-  private int overshoots;
-  private double overshootRandomModifierDivider;
-  private double overshootSpeedupDivider;
   private DeviationProvider deviationProvider;
   private NoiseProvider noiseProvider;
+  private OvershootManager overshootManager;
   private MouseInfoAccessor mouseInfo;
   private SystemCalls systemCalls;
   private SpeedManager speedManager;
-
-  /**
-   * TBD
-   * @return
-   */
-  public int getMinDistanceForOvershoots() {
-    return minDistanceForOvershoots;
-  }
-
-  /**
-   * TBD
-   * @param minDistanceForOvershoots
-   */
-  public void setMinDistanceForOvershoots(int minDistanceForOvershoots) {
-    this.minDistanceForOvershoots = minDistanceForOvershoots;
-  }
 
   /**
    * TBD
@@ -69,54 +51,6 @@ public class MouseMotionNature {
    */
   public void setMinSteps(int minSteps) {
     this.minSteps = minSteps;
-  }
-
-  /**
-   * TBD
-   * @return
-   */
-  public double getOvershootSpeedupDivider() {
-    return overshootSpeedupDivider;
-  }
-
-  /**
-   * TBD
-   * @param overshootSpeedupDivider
-   */
-  public void setOvershootSpeedupDivider(double overshootSpeedupDivider) {
-    this.overshootSpeedupDivider = overshootSpeedupDivider;
-  }
-
-  /**
-   * TBD
-   * @return
-   */
-  public long getMinOvershootMovementMs() {
-    return minOvershootMovementMs;
-  }
-
-  /**
-   * TBD
-   * @param minOvershootMovementMs
-   */
-  public void setMinOvershootMovementMs(int minOvershootMovementMs) {
-    this.minOvershootMovementMs = minOvershootMovementMs;
-  }
-
-  /**
-   * TBD
-   * @return
-   */
-  public double getOvershootRandomModifierDivider() {
-    return overshootRandomModifierDivider;
-  }
-
-  /**
-   * TBD
-   * @param overshootRandomModifierDivider
-   */
-  public void setOvershootRandomModifierDivider(int overshootRandomModifierDivider) {
-    this.overshootRandomModifierDivider = overshootRandomModifierDivider;
   }
 
   /**
@@ -260,28 +194,12 @@ public class MouseMotionNature {
     this.speedManager = speedManager;
   }
 
-  /**
-   * Get the maximum amount of overshoots the cursor does before reaching its final destination.
-   * Overshoots provide a realistic way to simulate user trying to reach the destination with mouse, but miss.
-   * This only happens when mouse is far away enough from the destination, then random points around the destination
-   * are produced which will be hit before the mouse hits the real destination. If mouse happens to accidentally hit
-   * the target close enough, then overshooting is cancelled and real destination will get reached.
-   * @return the number of maximum overshoots used
-   */
-  public int getOvershoots() {
-    return overshoots;
+  public OvershootManager getOvershootManager() {
+    return overshootManager;
   }
 
-  /**
-   * Set the maximum amount of overshoots the cursor does before reaching its final destination.
-   * Overshoots provide a realistic way to simulate user trying to reach the destination with mouse, but miss.
-   * This only happens when mouse is far away enough from the destination, then random points around the destination
-   * are produced which will be hit before the mouse hits the real destination. If mouse happens to accidentally hit
-   * the target close enough, then overshooting is cancelled and real destination will get reached.
-   * Alters the underlying nature instance in this factory.
-   * @param overshoots the number of maximum overshoots used
-   */
-  public void setOvershoots(int overshoots) {
-    this.overshoots = overshoots;
+  public void setOvershootManager(OvershootManager overshootManager) {
+    this.overshootManager = overshootManager;
   }
+
 }

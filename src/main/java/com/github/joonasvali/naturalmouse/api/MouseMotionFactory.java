@@ -129,20 +129,6 @@ public class MouseMotionFactory {
   }
 
   /**
-   * see {@link MouseMotionNature#getOvershoots()}
-   */
-  public int getOvershoots() {
-    return nature.getOvershoots();
-  }
-
-  /**
-   * see {@link MouseMotionNature#setOvershoots(int)}
-   */
-  public void setOvershoots(int overshoots) {
-    nature.setOvershoots(overshoots);
-  }
-
-  /**
    * see {@link MouseMotionNature#getSpeedManager()}
    */
   public SpeedManager getSpeedManager() {
