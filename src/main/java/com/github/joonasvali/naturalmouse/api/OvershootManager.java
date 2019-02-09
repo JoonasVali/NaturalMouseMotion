@@ -12,6 +12,13 @@ import java.awt.*;
 public interface OvershootManager {
   /**
    * Get the maximum amount of overshoots the cursor does before reaching its final destination.
+   * @param flow the flow which is planned to be used to reach the target.
+   *             (If returned overshoots > 0, then a new flow will be calculated for each overshoot.).
+   *             This flow could be analyzed if overshooting is suitable. It is not available
+   *             as a parameter in overshootAmount calculation, because flow itself is calculated
+   *             from the movement distance, which is dependent on the overshoot amount.
+   * @param mouseMovementMs the planned time for reaching the real target
+   * @param distance the distance between mouse position and real target
    * @return the number of maximum overshoots used or 0 if no overshoots
    */
   int getOvershoots(Flow flow, long mouseMovementMs, double distance);
