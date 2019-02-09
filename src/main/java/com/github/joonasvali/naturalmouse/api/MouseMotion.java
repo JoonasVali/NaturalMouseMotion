@@ -201,7 +201,6 @@ public class MouseMotion {
       Point overshoot = overshootManager.getOvershootAmount(
           xDest - lastMousePositionX, yDest - lastMousePositionY, mouseMovementMs, i
       );
-      log.info(overshoot.toString());
       int currentDestinationX = limitByScreenWidth(xDest + overshoot.x);
       int currentDestinationY = limitByScreenHeight(yDest + overshoot.y);
       xDistance = currentDestinationX - lastMousePositionX;
