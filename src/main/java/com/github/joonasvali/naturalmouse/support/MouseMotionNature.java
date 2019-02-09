@@ -194,10 +194,20 @@ public class MouseMotionNature {
     this.speedManager = speedManager;
   }
 
+  /**
+   * Get the manager that deals with overshoot properties.
+   * Overshoots provide a realistic way to simulate user trying to reach the destination with mouse, but miss.
+   * @return the manager
+   */
   public OvershootManager getOvershootManager() {
     return overshootManager;
   }
 
+  /**
+   * Set the manager that deals with overshoot properties.
+   * Overshoots provide a realistic way to simulate user trying to reach the destination with mouse, but miss.
+   * @param overshootManager the manager
+   */
   public void setOvershootManager(OvershootManager overshootManager) {
     this.overshootManager = overshootManager;
   }

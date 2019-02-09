@@ -12,7 +12,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
   @Test
   public void linearMotionNoOvershoots() throws InterruptedException {
     assertMousePosition(0, 0);
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(0);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
     factory.move(50, 50);
     assertMousePosition(50, 50);
 
@@ -35,7 +35,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
   @Test
   public void cantMoveOutOfScreenToNegative_noOverShoots() throws InterruptedException {
     assertMousePosition(0, 0);
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(0);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
     factory.move(-50, -50);
 
     ArrayList<Point> points = mouse.getMouseMovements();
@@ -51,7 +51,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
     Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     assertMousePosition(0, 0);
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(0);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
     factory.move(SCREEN_WIDTH + 100, SCREEN_HEIGHT - 100);
 
     ArrayList<Point> points = mouse.getMouseMovements();
@@ -67,7 +67,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
     Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     assertMousePosition(0, 0);
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(100);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(100);
     factory.move(SCREEN_WIDTH - 1, SCREEN_HEIGHT - 100);
 
     ArrayList<Point> points = mouse.getMouseMovements();
@@ -83,7 +83,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
     Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     assertMousePosition(0, 0);
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(0);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
     factory.move(SCREEN_WIDTH - 100, SCREEN_HEIGHT + 100);
 
     ArrayList<Point> points = mouse.getMouseMovements();
@@ -99,7 +99,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
     Assert.assertNotEquals(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     assertMousePosition(0, 0);
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(100);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(100);
     factory.move(SCREEN_WIDTH - 100, SCREEN_HEIGHT - 1);
 
     ArrayList<Point> points = mouse.getMouseMovements();
@@ -116,7 +116,7 @@ public class MouseMotionTest extends MouseMotionTestBase {
     assertMousePosition(50, 50);
 
     // Moving mouse to 0,0 with large amount of overshoots, so it would be likely to hit negative if possible.
-    ((DefaultOvershootManager)factory.getNature().getOvershootManager()).setOvershoots(100);
+    ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(100);
     factory.move(0, 0);
 
     ArrayList<Point> points = mouse.getMouseMovements();

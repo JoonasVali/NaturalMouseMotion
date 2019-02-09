@@ -33,7 +33,7 @@ public class FactoryTemplates {
     factory.setNoiseProvider(new DefaultNoiseProvider(1.6));
     factory.getNature().setReactionTimeBaseMs(100);
 
-    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getNature().getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(3);
     overshootManager.setMinDistanceForOvershoots(3);
     overshootManager.setMinOvershootMovementMs(500);
@@ -60,7 +60,7 @@ public class FactoryTemplates {
     factory.setDeviationProvider((totalDistanceInPixels, completionFraction) -> DoublePoint.ZERO);
     factory.setNoiseProvider(((random, xStepSize, yStepSize) -> DoublePoint.ZERO));
 
-    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getNature().getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(0);
 
     factory.setSpeedManager(manager);
@@ -86,7 +86,7 @@ public class FactoryTemplates {
     factory.getNature().setReactionTimeVariationMs(100);
     manager.setMouseMovementBaseTimeMs(250);
 
-    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getNature().getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(4);
 
     factory.setSpeedManager(manager);
@@ -98,7 +98,7 @@ public class FactoryTemplates {
    * medium noise, medium speed, medium noise and deviation.
    * @return the factory
    */
-  public static MouseMotionFactory createStandardComputerUserMotionFactory() {
+  public static MouseMotionFactory createAverageComputerUserMotionFactory() {
     MouseMotionFactory factory = new MouseMotionFactory();
     List<Flow> flows = new ArrayList<>(Arrays.asList(
         new Flow(FlowTemplates.constantSpeed()),
@@ -114,7 +114,7 @@ public class FactoryTemplates {
     factory.setNoiseProvider(new DefaultNoiseProvider(DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER));
     manager.setMouseMovementBaseTimeMs(450);
 
-    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getNature().getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(4);
 
     factory.setSpeedManager(manager);

@@ -159,4 +159,18 @@ public class MouseMotionFactory {
   public void setNature(MouseMotionNature nature) {
     this.nature = nature;
   }
+
+  /**
+   * see {@link MouseMotionNature#setOvershootManager(OvershootManager)}
+   */
+  public void setOvershootManager(OvershootManager manager) {
+    nature.setOvershootManager(manager);
+  }
+
+  /**
+   * see {@link MouseMotionNature#getOvershootManager()}
+   */
+  public OvershootManager getOvershootManager() {
+    return nature.getOvershootManager();
+  }
 }

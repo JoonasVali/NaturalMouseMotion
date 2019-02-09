@@ -213,7 +213,7 @@ public class MouseMotion {
       lastMousePositionX = currentDestinationX;
       lastMousePositionY = currentDestinationY;
       // Apply for the next overshoot if exists.
-      mouseMovementMs = overshootManager.deriveNextMouseMovementTimeMs(mouseMovementMs, i);
+      mouseMovementMs = overshootManager.deriveNextMouseMovementTimeMs(mouseMovementMs, i - 1);
     }
 
     xDistance = xDest - lastMousePositionX;
