@@ -211,8 +211,10 @@ public class MouseMotion {
           Math.pow(lastMousePositionX - xDest, 2) + Math.pow(lastMousePositionY - yDest, 2)
       );
       double randomModifier = distanceToRealTarget / overshootRandomModifierDivider;
-      int currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2d) * i;
-      int currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2d) * i;
+      int currentDestinationX =
+          limitByScreenWidth(xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2d) * i);
+      int currentDestinationY =
+          limitByScreenHeight(yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2d) * i);
       xDistance = currentDestinationX - lastMousePositionX;
       yDistance = currentDestinationY - lastMousePositionY;
       distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
