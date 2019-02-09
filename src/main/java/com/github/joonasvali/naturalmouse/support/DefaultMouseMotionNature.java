@@ -7,15 +7,15 @@ import static com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProv
 
 public class DefaultMouseMotionNature extends MouseMotionNature {
 
-  private static final int MIN_DISTANCE_FOR_OVERSHOOTS = 50;
-  private static final int TIME_TO_STEPS_DIVIDER = 8;
-  private static final int MIN_STEPS = 10;
-  private static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.8;
-  private static final int MIN_OVERSHOOT_MOVEMENT_MS = 40;
-  private static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
-  private static final int EFFECT_FADE_STEPS = 15;
-  private static final int REACTION_TIME_BASE_MS = 20;
-  private static final int REACTION_TIME_VARIATION_MS = 120;
+  public static final int MIN_DISTANCE_FOR_OVERSHOOTS = 10;
+  public static final int TIME_TO_STEPS_DIVIDER = 8;
+  public static final int MIN_STEPS = 10;
+  public static final double OVERSHOOT_SPEEDUP_DIVIDER = 1.8;
+  public static final int MIN_OVERSHOOT_MOVEMENT_MS = 40;
+  public static final int OVERSHOOT_RANDOM_MODIFIER_DIVIDER = 20;
+  public static final int EFFECT_FADE_STEPS = 15;
+  public static final int REACTION_TIME_BASE_MS = 20;
+  public static final int REACTION_TIME_VARIATION_MS = 120;
 
   public DefaultMouseMotionNature() {
     try {

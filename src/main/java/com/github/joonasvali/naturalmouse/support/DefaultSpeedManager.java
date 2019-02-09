@@ -11,7 +11,7 @@ import java.util.List;
 public class DefaultSpeedManager implements SpeedManager {
   private static final double SMALL_DELTA = 10e-6;
   private final List<Flow> flows = new ArrayList<>();
-  private long mouseMovementTimeMs = 700;
+  private long mouseMovementTimeMs = 500;
 
   public DefaultSpeedManager(Collection<Flow> flows) {
     this.flows.addAll(flows);

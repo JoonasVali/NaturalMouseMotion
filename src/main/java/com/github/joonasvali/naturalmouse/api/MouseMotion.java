@@ -7,8 +7,12 @@ import com.github.joonasvali.naturalmouse.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
+import java.util.List;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * Contains instructions to move cursor smoothly to the destination coordinates from where ever the cursor
@@ -85,33 +89,26 @@ public class MouseMotion {
   public void move(MouseMotionObserver observer) throws InterruptedException {
     updateMouseInfo();
     log.info("Starting to move mouse to ({}, {}), current position: ({}, {})", xDest, yDest, mousePosition.x, mousePosition.y);
-    double initialDistance = Math.sqrt(Math.pow(xDest - mousePosition.x, 2) + Math.pow(yDest - mousePosition.y, 2));
-    int overshoots = this.overshoots;
 
+    ArrayDeque<Movement> movements = createMovements();
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
-      int xDistance = xDest - mousePosition.x;
-      int yDistance = yDest - mousePosition.y;
-
-      double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-      Pair<Flow, Long> flowTime = speedManager.getFlowWithTime(distance);
-      Flow flow = flowTime.x;
-      long mouseMovementMs = flowTime.y;
-      log.info("MouseMovementMs calculated to {} ms", mouseMovementMs);
-      double speedPixelsPerSecond = distance / mouseMovementMs * 1000;
-      if (overshoots > 0 && initialDistance > minDistanceForOvershoots) {
-        // Let's miss the target a bit at first.
-        double randomModifier = speedPixelsPerSecond / overshootRandomModifierDivider;
-        int currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
-        int currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2) * overshoots;
-        xDistance = currentDestinationX - mousePosition.x;
-        yDistance = currentDestinationY - mousePosition.y;
-        distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-        log.debug("Using overshoots ({} out of {}), aiming at ({}, {})",
-            overshoots, this.overshoots, currentDestinationX, currentDestinationY);
-        mouseMovementMs /= overshootSpeedupDivider;
-        mouseMovementMs = Math.max(mouseMovementMs, minOvershootMovementMs);
-        overshoots--;
+      if (movements.isEmpty()) {
+        log.debug("Populating movement array.");
+        movements = createMovements();
       }
+
+      Movement movement = movements.removeFirst();
+      if (!movements.isEmpty()) {
+        log.debug("Using overshoots ({} out of {}), aiming at ({}, {})",
+            this.overshoots - movements.size() + 1, this.overshoots, movement.destX, movement.destY);
+      }
+
+      double distance = movement.distance;
+      double mouseMovementMs = movement.time;
+      Flow flow = movement.flow;
+      double xDistance = movement.xDistance;
+      double yDistance = movement.yDistance;
+      log.debug("Movement arc length computed to {} and time predicted to {} ms", (int) distance, mouseMovementMs);
 
       /* Number of steps is calculated from the movement time and limited by minimal amount of steps
          (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
@@ -136,9 +133,10 @@ public class MouseMotion {
         // All steps take equal amount of time. This is a value from 0...1 describing how far along the process is.
         double timeCompletion = i / (double) steps;
 
-        double effectFade = Math.max(i - (steps - effectFadeSteps), 0);
-        // value from 0 to 1, when EFFECT_FADE_STEPS remaining steps, starts to decrease to 0 linearly
-        double effectFadeMultiplier = (effectFadeSteps - effectFade) / effectFadeSteps;
+        double effectFadeStep = Math.max(i - (steps - effectFadeSteps) + 1, 0);
+        // value from 0 to 1, when effectFadeSteps remaining steps, starts to decrease to 0 linearly
+        // This is here so noise and deviation wouldn't add offset to mouse final position, when we need accuracy.
+        double effectFadeMultiplier = (effectFadeSteps - effectFadeStep) / effectFadeSteps;
 
         double xStepSize = flow.getStepSize(xDistance, steps, timeCompletion);
         double yStepSize = flow.getStepSize(yDistance, steps, timeCompletion);
@@ -180,12 +178,63 @@ public class MouseMotion {
         sleepAround(Math.max(timeLeft, 0), 0);
       }
       updateMouseInfo();
-      if (mousePosition.x != xDest || mousePosition.y != yDest) {
+      if (mousePosition.x != movement.destX || mousePosition.y != movement.destY) {
         sleepAround(reactionTimeBaseMs, reactionTimeVariationMs);
       }
       log.debug("Steps completed, mouse at " + mousePosition.x + " " + mousePosition.y);
     }
     log.info("Mouse movement to ({}, {}) completed", xDest, yDest);
+  }
+
+  private ArrayDeque<Movement> createMovements() {
+    ArrayDeque<Movement> movements = new ArrayDeque<>();
+    int lastMousePositionX = mousePosition.x;
+    int lastMousePositionY = mousePosition.y;
+    int xDistance = xDest - lastMousePositionX;
+    int yDistance = yDest - lastMousePositionY;
+
+    double initialDistance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    Pair<Flow, Long> flowTime = speedManager.getFlowWithTime(initialDistance);
+    Flow flow = flowTime.x;
+    long mouseMovementMs = flowTime.y;
+
+    if (overshoots == 0 || initialDistance < minDistanceForOvershoots) {
+      movements.add(new Movement(xDest, yDest, initialDistance, xDistance, yDistance, mouseMovementMs, flow));
+      return movements;
+    }
+
+    double distance = initialDistance;
+    for (int i = overshoots; i > 0; i--) {
+      double speedPixelsPerSecond = distance / mouseMovementMs * 1000; // TODO utilize speed in overshoot calc
+
+      double distanceToRealTarget = Math.sqrt(
+          Math.pow(lastMousePositionX - xDest, 2) + Math.pow(lastMousePositionY - yDest, 2)
+      );
+      double randomModifier = distanceToRealTarget / overshootRandomModifierDivider;
+      int currentDestinationX = xDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2d) * i;
+      int currentDestinationY = yDest + (int) (random.nextDouble() * randomModifier - randomModifier / 2d) * i;
+      xDistance = currentDestinationX - lastMousePositionX;
+      yDistance = currentDestinationY - lastMousePositionY;
+      distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+      flow = speedManager.getFlowWithTime(distance).x;
+      movements.add(
+          new Movement(currentDestinationX, currentDestinationY, distance, xDistance, yDistance, mouseMovementMs, flow)
+      );
+      lastMousePositionX = currentDestinationX;
+      lastMousePositionY = currentDestinationY;
+      // Apply for the next overshoot if exists.
+      mouseMovementMs /= overshootSpeedupDivider;
+      mouseMovementMs = Math.max(mouseMovementMs, minOvershootMovementMs);
+    }
+
+    xDistance = xDest - lastMousePositionX;
+    yDistance = yDest - lastMousePositionY;
+    distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    movements.add(
+        new Movement(xDest, yDest, distance, xDistance, yDistance, mouseMovementMs, flow)
+    );
+
+    return movements;
   }
 
   private int limitByScreenWidth(int value) {
@@ -196,8 +245,8 @@ public class MouseMotion {
     return Math.max(0, Math.min(screenSize.height - 1, value));
   }
 
-  private void sleepAround(long sleep, long around) throws InterruptedException {
-    long sleepTime = (long) (sleep + random.nextDouble() * around);
+  private void sleepAround(long sleepMin, long randomPart) throws InterruptedException {
+    long sleepTime = (long) (sleepMin + random.nextDouble() * randomPart);
     if (log.isTraceEnabled() && sleepTime > 0) {
       updateMouseInfo();
       log.trace("Sleeping at ({}, {}) for {} ms", mousePosition.x, mousePosition.y, sleepTime);
@@ -207,5 +256,25 @@ public class MouseMotion {
 
   private void updateMouseInfo() {
     mousePosition = mouseInfo.getMousePosition();
+  }
+
+  private static class Movement {
+    private final int destX;
+    private final int destY;
+    private final double distance;
+    private final double xDistance;
+    private final double yDistance;
+    private final long time;
+    private final Flow flow;
+
+    public Movement(int destX, int destY, double distance, double xDistance, double yDistance, long time, Flow flow) {
+      this.destX = destX;
+      this.destY = destY;
+      this.distance = distance;
+      this.xDistance = xDistance;
+      this.yDistance = yDistance;
+      this.time = time;
+      this.flow = flow;
+    }
   }
 }

@@ -2,6 +2,7 @@ package com.github.joonasvali.naturalmouse.util;
 
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
+import com.github.joonasvali.naturalmouse.support.DefaultMouseMotionNature;
 import com.github.joonasvali.naturalmouse.support.DefaultNoiseProvider;
 import com.github.joonasvali.naturalmouse.support.DefaultSpeedManager;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
@@ -30,7 +31,12 @@ public class FactoryTemplates {
     factory.setDeviationProvider(new SinusoidalDeviationProvider(9));
     factory.setNoiseProvider(new DefaultNoiseProvider(1.6));
     factory.getNature().setReactionTimeBaseMs(100);
-    manager.setMouseMovementBaseTimeMs(1700);
+    factory.getNature().setMinDistanceForOvershoots(3);
+    factory.getNature().setMinOvershootMovementMs(500);
+    factory.getNature().setOvershootRandomModifierDivider(DefaultMouseMotionNature.OVERSHOOT_RANDOM_MODIFIER_DIVIDER / 2);
+    factory.getNature().setTimeToStepsDivider(DefaultMouseMotionNature.TIME_TO_STEPS_DIVIDER - 2);
+    factory.getNature().setOvershootSpeedupDivider(DefaultMouseMotionNature.OVERSHOOT_SPEEDUP_DIVIDER * 2);
+    manager.setMouseMovementBaseTimeMs(1200);
     factory.setOvershoots(3);
     factory.setSpeedManager(manager);
     return factory;
@@ -72,7 +78,7 @@ public class FactoryTemplates {
     factory.setDeviationProvider(new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));
     factory.setNoiseProvider(new DefaultNoiseProvider(DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER));
     factory.getNature().setReactionTimeVariationMs(100);
-    manager.setMouseMovementBaseTimeMs(350);
+    manager.setMouseMovementBaseTimeMs(250);
     factory.setOvershoots(4);
     factory.setSpeedManager(manager);
     return factory;
@@ -97,7 +103,7 @@ public class FactoryTemplates {
     DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));
     factory.setNoiseProvider(new DefaultNoiseProvider(DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER));
-    manager.setMouseMovementBaseTimeMs(750);
+    manager.setMouseMovementBaseTimeMs(450);
     factory.setOvershoots(4);
     factory.setSpeedManager(manager);
     return factory;
