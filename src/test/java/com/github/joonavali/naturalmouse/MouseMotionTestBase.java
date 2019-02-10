@@ -6,6 +6,8 @@ import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.api.NoiseProvider;
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
 import com.github.joonasvali.naturalmouse.api.SystemCalls;
+import com.github.joonasvali.naturalmouse.support.DefaultMouseInfoAccessor;
+import com.github.joonasvali.naturalmouse.support.DefaultSystemCalls;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
 import com.github.joonasvali.naturalmouse.support.Flow;
 import com.github.joonasvali.naturalmouse.util.Pair;
@@ -53,10 +55,11 @@ public class MouseMotionTestBase {
     Assert.assertEquals(y, pos.getY(), SMALL_DELTA);
   }
 
-  protected static class MockSystemCalls implements SystemCalls {
+  protected static class MockSystemCalls extends DefaultSystemCalls {
     private final MockMouse mockMouse;
 
     public MockSystemCalls(MockMouse mockMouse) {
+      super(null);
       this.mockMouse = mockMouse;
     }
 
@@ -109,7 +112,7 @@ public class MouseMotionTestBase {
     }
   }
 
-  protected static class MockMouse implements MouseInfoAccessor {
+  protected static class MockMouse extends DefaultMouseInfoAccessor {
     private final ArrayList<Point> mouseMovements = new ArrayList<>();
 
     MockMouse() {

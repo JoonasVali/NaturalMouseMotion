@@ -23,9 +23,6 @@ public class ScreenAdjustedNature extends DefaultMouseMotionNature {
   public ScreenAdjustedNature(Dimension screenSize, Point mouseOffset) {
     this.screenSize = screenSize;
     this.offset = mouseOffset;
-    // Initial wrapping:
-    setMouseInfo(super.getMouseInfo());
-    setSystemCalls(super.getSystemCalls());
   }
 
   @Override
