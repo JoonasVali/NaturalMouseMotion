@@ -22,80 +22,96 @@ public class MouseMotionNature {
   private SpeedManager speedManager;
 
   /**
-   * TBD
-   * @return
+   * Time to steps is how NaturalMouseMotion calculates how many locations need to be visited between
+   * start and end point. More steps means more smooth movement. Thus increasing this divider means less
+   * steps and decreasing means more steps.
+   * @return the divider which is used to get amount of steps from the planned movement time
    */
   public double getTimeToStepsDivider() {
     return timeToStepsDivider;
   }
 
   /**
-   * TBD
-   * @param timeToStepsDivider
+   * Time to steps is how NaturalMouseMotion calculates how many locations need to be visited between
+   * start and end point. More steps means more smooth movement. Thus increasing this divider means less
+   * steps and decreasing means more steps. The default value should be as smooth as needed for any real
+   * purpose. So unless this really is the issue, you shouldn't touch this value.
+   * @param timeToStepsDivider the divider which is used to get amount of steps from the planned movement time
    */
   public void setTimeToStepsDivider(double timeToStepsDivider) {
     this.timeToStepsDivider = timeToStepsDivider;
   }
 
   /**
-   * TBD
-   * @return
+   * Minimum amount of steps that is taken to reach the target, this is used when calculation otherwise would
+   * lead to too few steps for smooth mouse movement, which can happen for very fast movements.
+   * @return the minimal amount of steps used.
    */
   public int getMinSteps() {
     return minSteps;
   }
 
   /**
-   * TBD
-   * @param minSteps
+   * Minimum amount of steps that is taken to reach the target, this is used when calculation otherwise would
+   * lead to too few steps for smooth mouse movement, which can happen for very fast movements.
+   * The default value should cover your needs, usually no need to touch this.
+   * @param minSteps the minimal amount of steps used
    */
   public void setMinSteps(int minSteps) {
     this.minSteps = minSteps;
   }
 
   /**
-   * TBD
-   * @return
+   * Effect fade decreases the noise and deviation effects linearly to 0 at the end of the mouse movement,
+   * so mouse would end up in the intended target pixel even when noise or deviation would otherwise
+   * add offset to mouse position.
+   * @return the number of steps before last the effect starts to fade
    */
   public int getEffectFadeSteps() {
     return effectFadeSteps;
   }
 
   /**
-   * TBD
-   * @param effectFadeSteps
+   * Effect fade decreases the noise and deviation effects linearly to 0 at the end of the mouse movement,
+   * so mouse would end up in the intended target pixel even when noise or deviation would otherwise
+   * add offset to mouse position.
+   * @param effectFadeSteps the number of steps before last the effect starts to fade
    */
   public void setEffectFadeSteps(int effectFadeSteps) {
     this.effectFadeSteps = effectFadeSteps;
   }
 
   /**
-   * TBD
-   * @return
+   * Get the minimal sleep time when overshoot or some other feature has caused mouse to miss the original target
+   * to prepare for next attempt to move the mouse to target.
+   * @return the sleep time
    */
   public int getReactionTimeBaseMs() {
     return reactionTimeBaseMs;
   }
 
   /**
-   * TBD
-   * @param reactionTimeBaseMs
+   * Set the minimal sleep time when overshoot or some other feature has caused mouse to miss the original target
+   * to prepare for next attempt to move the mouse to target.
+   * @param reactionTimeBaseMs the sleep time
    */
   public void setReactionTimeBaseMs(int reactionTimeBaseMs) {
     this.reactionTimeBaseMs = reactionTimeBaseMs;
   }
 
   /**
-   * TBD
-   * @return
+   * Get the random sleep time when overshoot or some other feature has caused mouse to miss the original target
+   * to prepare for next attempt to move the mouse to target. Random part of this is added to the reactionTimeBaseMs.
+   * @return reactionTimeVariationMs the sleep time
    */
   public int getReactionTimeVariationMs() {
     return reactionTimeVariationMs;
   }
 
   /**
-   * TBD
-   * @param reactionTimeVariationMs
+   * Set the random sleep time when overshoot or some other feature has caused mouse to miss the original target
+   * to prepare for next attempt to move the mouse to target. Random part of this is added to the reactionTimeBaseMs.
+   * @param reactionTimeVariationMs the sleep time
    */
   public void setReactionTimeVariationMs(int reactionTimeVariationMs) {
     this.reactionTimeVariationMs = reactionTimeVariationMs;
