@@ -49,10 +49,10 @@ so a quick access can be found by calling `MouseMotionFactory.getDefault().move(
 
 Natural Mouse Motion includes FactoryTemplates class which contains a variety of behaviors for your simulations.
 
-  * GrannyMotionFactory is a slow and clumsy mouse movement with a lot of noise.
-  * FastGamerMotionFactory is a fast and persistent movement with low noise, simulating behavior of someone who knows where the click should land, like a professional gamer.
-  * AverageComputerUserMotionFactory is a medium speed movement with average settings, slower than fast gamer, but much faster than granny motion.
-  * DemoRobotMotionFactory is featureless constant speed robotic movement with no mistakes.
+  * **GrannyMotionFactory** is a slow and clumsy mouse movement with a lot of noise.
+  * **FastGamerMotionFactory** is a fast and persistent movement with low noise, simulating behavior of someone who knows where the click should land, like a professional gamer.
+  * **AverageComputerUserMotionFactory** is a medium speed movement with average settings, slower than fast gamer, but much faster than granny motion.
+  * **DemoRobotMotionFactory** is featureless constant speed robotic movement with no mistakes.
   
 ## Translating coordinates from real screen to virtual screen ##
 
