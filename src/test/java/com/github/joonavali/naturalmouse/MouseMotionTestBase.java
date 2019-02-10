@@ -4,8 +4,11 @@ import com.github.joonasvali.naturalmouse.api.DeviationProvider;
 import com.github.joonasvali.naturalmouse.api.MouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.api.NoiseProvider;
+import com.github.joonasvali.naturalmouse.api.SpeedManager;
 import com.github.joonasvali.naturalmouse.api.SystemCalls;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
+import com.github.joonasvali.naturalmouse.support.Flow;
+import com.github.joonasvali.naturalmouse.util.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -21,6 +24,7 @@ public class MouseMotionTestBase {
   protected SystemCalls systemCalls;
   protected DeviationProvider deviationProvider;
   protected NoiseProvider noiseProvider;
+  protected SpeedManager speedManager;
   protected Random random;
   protected MockMouse mouse;
 
@@ -31,11 +35,13 @@ public class MouseMotionTestBase {
     systemCalls = new MockSystemCalls(mouse);
     deviationProvider = new MockDeviationProvider();
     noiseProvider = new MockNoiseProvider();
+    speedManager = new MockSpeedManager();
     random = new MockRandom();
 
     factory.setSystemCalls(systemCalls);
     factory.setDeviationProvider(deviationProvider);
     factory.setNoiseProvider(noiseProvider);
+    factory.setSpeedManager(speedManager);
     factory.setRandom(random);
 
     factory.setMouseInfo(mouse);
@@ -47,7 +53,7 @@ public class MouseMotionTestBase {
     Assert.assertEquals(y, pos.getY(), SMALL_DELTA);
   }
 
-  protected class MockSystemCalls implements SystemCalls {
+  protected static class MockSystemCalls implements SystemCalls {
     private final MockMouse mockMouse;
 
     public MockSystemCalls(MockMouse mockMouse) {
@@ -75,25 +81,43 @@ public class MouseMotionTestBase {
     }
   }
 
-  protected class MockDeviationProvider implements DeviationProvider {
+  protected static class MockDeviationProvider implements DeviationProvider {
     @Override
     public DoublePoint getDeviation(double totalDistanceInPixels, double completionFraction) {
       return new DoublePoint(0, 0);
     }
   }
 
-  protected class MockNoiseProvider implements NoiseProvider {
+  protected static class MockSpeedManager implements SpeedManager {
+
+    @Override
+    public Pair<Flow, Long> getFlowWithTime(double distance) {
+      double[] characteristics = {100};
+      return new Pair<Flow, Long>(new Flow(characteristics), 10L);
+    }
+  }
+
+  protected SpeedManager createMockSpeedManager() {
+    double[] characteristics = {100};
+    return distance -> new Pair<Flow, Long>(new Flow(characteristics), 10L);
+  }
+
+  protected static class MockNoiseProvider implements NoiseProvider {
     @Override
     public DoublePoint getNoise(Random random, double xStepSize, double yStepSize) {
       return new DoublePoint(0, 0);
     }
   }
 
-  protected class MockMouse implements MouseInfoAccessor {
+  protected static class MockMouse implements MouseInfoAccessor {
     private final ArrayList<Point> mouseMovements = new ArrayList<>();
 
     MockMouse() {
       mouseMovements.add(new Point(0, 0));
+    }
+
+    MockMouse(int posX, int posY) {
+      mouseMovements.add(new Point(posX, posY));
     }
 
     public synchronized void mouseMove(int x, int y) {
@@ -110,7 +134,7 @@ public class MouseMotionTestBase {
     }
   }
 
-  protected class MockRandom extends Random {
+  protected static class MockRandom extends Random {
     int index = 0;
     double[] nums = new double[]{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
 

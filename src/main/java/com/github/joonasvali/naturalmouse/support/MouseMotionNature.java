@@ -211,5 +211,4 @@ public class MouseMotionNature {
   public void setOvershootManager(OvershootManager overshootManager) {
     this.overshootManager = overshootManager;
   }
-
 }
