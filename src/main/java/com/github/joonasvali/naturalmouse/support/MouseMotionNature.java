@@ -167,7 +167,7 @@ public class MouseMotionNature {
   /**
    * Set the accessor object, which MouseMotion uses to detect the position of mouse on screen.
    *
-   * @param mouseInfo
+   * @param mouseInfo the accessor object
    */
   public void setMouseInfo(MouseInfoAccessor mouseInfo) {
     this.mouseInfo = mouseInfo;

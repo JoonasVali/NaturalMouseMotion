@@ -56,6 +56,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#getSystemCalls()}
+   *
+   * @return the systemcalls
    */
   public SystemCalls getSystemCalls() {
     return nature.getSystemCalls();
@@ -63,6 +65,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#setSystemCalls(SystemCalls)}
+   *
+   * @param systemCalls the systemcalls
    */
   public void setSystemCalls(SystemCalls systemCalls) {
     nature.setSystemCalls(systemCalls);
@@ -70,6 +74,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#getDeviationProvider()}
+   *
+   * @return the deviation provider
    */
   public DeviationProvider getDeviationProvider() {
     return nature.getDeviationProvider();
@@ -77,6 +83,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#setDeviationProvider(DeviationProvider)}
+   *
+   * @param deviationProvider the deviation provider
    */
   public void setDeviationProvider(DeviationProvider deviationProvider) {
     nature.setDeviationProvider(deviationProvider);
@@ -84,6 +92,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#getNoiseProvider()}
+   *
+   * @return the noise provider
    */
   public NoiseProvider getNoiseProvider() {
     return nature.getNoiseProvider();
@@ -91,6 +101,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#setNoiseProvider(NoiseProvider)}}
+   *
+   * @param noiseProvider the noise provider
    */
   public void setNoiseProvider(NoiseProvider noiseProvider) {
     nature.setNoiseProvider(noiseProvider);
@@ -116,6 +128,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#getMouseInfo()}
+   *
+   * @return the mouseInfo
    */
   public MouseInfoAccessor getMouseInfo() {
     return nature.getMouseInfo();
@@ -123,6 +137,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#setMouseInfo(MouseInfoAccessor)}
+   *
+   * @param mouseInfo the mouseInfo
    */
   public void setMouseInfo(MouseInfoAccessor mouseInfo) {
     nature.setMouseInfo(mouseInfo);
@@ -130,6 +146,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#getSpeedManager()}
+   *
+   * @return the manager
    */
   public SpeedManager getSpeedManager() {
     return nature.getSpeedManager();
@@ -137,6 +155,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#setSpeedManager(SpeedManager)}
+   *
+   * @param speedManager the manager
    */
   public void setSpeedManager(SpeedManager speedManager) {
     nature.setSpeedManager(speedManager);
@@ -162,6 +182,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#setOvershootManager(OvershootManager)}
+   *
+   * @param manager the manager
    */
   public void setOvershootManager(OvershootManager manager) {
     nature.setOvershootManager(manager);
@@ -169,6 +191,8 @@ public class MouseMotionFactory {
 
   /**
    * see {@link MouseMotionNature#getOvershootManager()}
+   *
+   * @return the manager
    */
   public OvershootManager getOvershootManager() {
     return nature.getOvershootManager();

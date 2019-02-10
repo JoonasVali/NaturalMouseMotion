@@ -13,7 +13,7 @@ public interface OvershootManager {
   /**
    * Get the maximum amount of overshoots the cursor does before reaching its final destination.
    * @param flow the flow which is planned to be used to reach the target.
-   *             (If returned overshoots > 0, then a new flow will be calculated for each overshoot.).
+   *             (If returned overshoots &gt; 0, then a new flow will be calculated for each overshoot.).
    *             This flow could be analyzed if overshooting is suitable. It is not available
    *             as a parameter in overshootAmount calculation, because flow itself is calculated
    *             from the movement distance, which is dependent on the overshoot amount.
@@ -30,7 +30,7 @@ public interface OvershootManager {
    * @param distanceToRealTargetY distance to real target Y-coordinate
    * @param mouseMovementMs the time planned for reaching the real target
    * @param overshootsRemaining the amount of overshoots remaining, current included.
-   *                            Values from (n to 1), where n >= 1
+   *                            Values from (n to 1), where n &gt;= 1
    * @return the amount which will be added to real target, thus getting the overshoot target.
    */
   Point getOvershootAmount(double distanceToRealTargetX, double distanceToRealTargetY, long mouseMovementMs, int overshootsRemaining);
@@ -40,7 +40,7 @@ public interface OvershootManager {
    * (can be real or overshoot target, if the next target is real target, the overshootsRemaining value is 0)
    * @param mouseMovementMs the last mouse movement in ms
    * @param overshootsRemaining the amount of overshoots remaining, including this.
-   *                            Values from (n to 0), where n >= 0
+   *                            Values from (n to 0), where n &gt;= 0
    * @return the next mouse movement time in ms
    */
   long deriveNextMouseMovementTimeMs(long mouseMovementMs, int overshootsRemaining);
