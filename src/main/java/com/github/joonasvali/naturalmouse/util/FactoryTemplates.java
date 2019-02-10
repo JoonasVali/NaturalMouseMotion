@@ -27,6 +27,7 @@ public class FactoryTemplates {
     flows.add(new Flow(FlowTemplates.jaggedFlow()));
     flows.add(new Flow(FlowTemplates.random()));
     flows.add(new Flow(FlowTemplates.interruptedFlow()));
+    flows.add(new Flow(FlowTemplates.interruptedFlow2()));
     flows.add(new Flow(FlowTemplates.stoppingFlow()));
     DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(new SinusoidalDeviationProvider(9));
@@ -104,6 +105,7 @@ public class FactoryTemplates {
         new Flow(FlowTemplates.constantSpeed()),
         new Flow(FlowTemplates.variatingFlow()),
         new Flow(FlowTemplates.interruptedFlow()),
+        new Flow(FlowTemplates.interruptedFlow2()),
         new Flow(FlowTemplates.slowStartupFlow()),
         new Flow(FlowTemplates.slowStartup2Flow()),
         new Flow(FlowTemplates.jaggedFlow()),
