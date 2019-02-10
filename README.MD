@@ -8,11 +8,11 @@ of the cursor for specific use cases.
 
 Some of the features Natural Motion Contains:
 
-  * Deviation: Deviation leads the mouse away from direct trajectory, creating and arc instead of straight line
-  * Noise: Noise creates errors in the movement, this can simulate hand shakiness, someone using a non accurate mouse or bad surface under the mouse.
-  * Speed and flow: Speed and flow are defining the progressing of the mouse at given time, for example it's possible that movement starts slow and then gains speed, or is just variating.
-  * Overshoots: Overshoots happen if user is not 100% accurate with the mouse and hits an area next to the target instead, requiring to adjust the cursor to reach the actual target.
-  * Coordinate translation: Coordinate translation allows to specify offset and dimensions to restrict a movement in a different area than the screen or in a virtual screen inside the real screen.
+  * **Deviation**: Deviation leads the mouse away from direct trajectory, creating and arc instead of straight line
+  * **Noise**: Noise creates errors in the movement, this can simulate hand shakiness, someone using a non accurate mouse or bad surface under the mouse.
+  * **Speed** and **flow**: Speed and flow are defining the progressing of the mouse at given time, for example it's possible that movement starts slow and then gains speed, or is just variating.
+  * **Overshoots**: Overshoots happen if user is not 100% accurate with the mouse and hits an area next to the target instead, requiring to adjust the cursor to reach the actual target.
+  * **Coordinate translation**: Coordinate translation allows to specify offset and dimensions to restrict a movement in a different area than the screen or in a virtual screen inside the real screen.
 
 ## Demonstration video (1.0.3): ## 
 https://www.youtube.com/watch?v=Z3srG195TIk 
@@ -30,7 +30,7 @@ https://www.youtube.com/watch?v=Z3srG195TIk
 
 ## Running: ##
 
-Natural Mouse Motion needs at least java 8 to run.
+Natural Mouse Motion needs at least **java 8** to run.
 
 You start by creating a new `com.github.joonasvali.naturalmouse.api.MouseMotionFactory`
 or using the default instance, by calling `MouseMotionFactory.getDefault();`
@@ -58,7 +58,7 @@ Natural Mouse Motion includes FactoryTemplates class which contains a variety of
 
 Sometimes you might need to simulate the mouse movement somewhere else than in the real screen or keep the mouse in a smaller area in the screen. 
 In this case it is possible to perform coordinate translation by limiting the screen to certain area only. The following code is restricting the 
-movement to 500*500 box at coordinates (50,50) on screen.
+movement to **500*500** box at coordinates **(50,50)** on screen.
 ```
     MouseMotionFactory factory = new MouseMotionFactory();
     Dimension screenSize = new Dimension(500, 500);
@@ -67,8 +67,8 @@ movement to 500*500 box at coordinates (50,50) on screen.
     // Rest of the factory settings here
 ```
 
-For example by calling factory.move(10, 10), the mouse is going to be moved to (60, 60) on real screen as the offset is (50, 50).
-Attempting to move the mouse outside the 500x500 box with larger values is going to make it hit the imaginary wall at real screen coordinates (550, 550).
+For example by calling `factory.move(10, 10)`, the mouse is going to be moved to **(60, 60)** on real screen as the offset is **(50, 50)**.
+Attempting to move the mouse outside the **500x500** box with larger values is going to make it hit the imaginary wall at real screen coordinates **(550, 550)**.
 
 NB: By setting the nature in the factory all previously set nature settings are lost because the instance is reassigned, which means setting nature should be done 
 as a first thing in the factory, before any other settings are touched (as the settings are stored in the nature).
