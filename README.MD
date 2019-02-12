@@ -1,4 +1,4 @@
-## Natural Mouse Motion ##
+## NaturalMouseMotion ##
 
 This library provides a way to move cursor to specified coordinates on screen reliably,
 while being randomly arced to look like real hand moved it there by using a mouse.
@@ -6,7 +6,7 @@ The default settings should look good enough for most cases, but if user wishes,
 they can heavily customize the settings and implementations responsible for the trajectory 
 of the cursor for specific use cases.
 
-Some of the features Natural Motion Contains:
+Some of the features NaturalMouseMotion contains:
 
   * **Deviation**: Deviation leads the mouse away from direct trajectory, creating and arc instead of straight line
   * **Noise**: Noise creates errors in the movement, this can simulate hand shakiness, someone using a non accurate mouse or bad surface under the mouse.
@@ -14,9 +14,8 @@ Some of the features Natural Motion Contains:
   * **Overshoots**: Overshoots happen if user is not 100% accurate with the mouse and hits an area next to the target instead, requiring to adjust the cursor to reach the actual target.
   * **Coordinate translation**: Coordinate translation allows to specify offset and dimensions to restrict a movement in a different area than the screen or in a virtual screen inside the real screen.
 
-## Demonstration video (1.0.3): ## 
-https://www.youtube.com/watch?v=Z3srG195TIk 
-(2.0.0 is not yet available)
+## Demonstration video (2.0.0): ## 
+https://www.youtube.com/watch?v=CuG9LvQ0fdQ
 
 ## Maven: ##
 
@@ -30,7 +29,7 @@ https://www.youtube.com/watch?v=Z3srG195TIk
 
 ## Running: ##
 
-Natural Mouse Motion needs at least **java 8** to run.
+NaturalMouseMotion needs at least **java 8** to run.
 
 You start by creating a new `com.github.joonasvali.naturalmouse.api.MouseMotionFactory`
 or using the default instance, by calling `MouseMotionFactory.getDefault();`
@@ -47,7 +46,7 @@ so a quick access can be found by calling `MouseMotionFactory.getDefault().move(
 
 ## Precooked templates ##
 
-Natural Mouse Motion includes FactoryTemplates class which contains a variety of behaviors for your simulations.
+NaturalMouseMotion includes FactoryTemplates class which contains a variety of behaviors for your simulations.
 
   * **GrannyMotionFactory** is a slow and clumsy mouse movement with a lot of noise.
   * **FastGamerMotionFactory** is a fast and persistent movement with low noise, simulating behavior of someone who knows where the click should land, like a professional gamer.
@@ -81,6 +80,6 @@ In `SystemCalls` you need to implement the `setMousePosition(int x, int y)` so i
 
 In `MouseInfoAccessor` you need to implement the `getMousePosition()` method to get the cursor coordinates from the specified device.
 
-And that's basically it, rest is handled by Natural Mouse Motion internals.
+And that's basically it, rest is handled by NaturalMouseMotion internals.
 
 
