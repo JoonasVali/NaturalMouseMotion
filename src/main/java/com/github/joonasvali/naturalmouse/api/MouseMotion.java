@@ -3,6 +3,7 @@ package com.github.joonasvali.naturalmouse.api;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
 import com.github.joonasvali.naturalmouse.support.Flow;
 import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
+import com.github.joonasvali.naturalmouse.util.MathUtil;
 import com.github.joonasvali.naturalmouse.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,13 +149,16 @@ public class MouseMotion {
         simulatedMouseX += xStepSize;
         simulatedMouseY += yStepSize;
 
+        log.trace("EffectFadeMultiplier: {}", effectFadeMultiplier);
+        log.trace("SimulatedMouse: [{}, {}]", simulatedMouseX, simulatedMouseY);
+
         long endTime = startTime + stepTime * (i + 1);
-        int mousePosX = (int) Math.round(simulatedMouseX +
+        int mousePosX = MathUtil.roundTowards(simulatedMouseX +
             deviation.getX() * deviationMultiplierX * effectFadeMultiplier +
-            noiseX * effectFadeMultiplier);
-        int mousePosY = (int) Math.round(simulatedMouseY +
+            noiseX * effectFadeMultiplier, movement.destX);
+        int mousePosY = MathUtil.roundTowards(simulatedMouseY +
             deviation.getY() * deviationMultiplierY * effectFadeMultiplier +
-            noiseY * effectFadeMultiplier);
+            noiseY * effectFadeMultiplier, movement.destY);
 
         mousePosX = limitByScreenWidth(mousePosX);
         mousePosY = limitByScreenHeight(mousePosY);
