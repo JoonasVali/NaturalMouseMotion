@@ -137,7 +137,7 @@ public class MouseMotion {
 
         completedXDistance += xStepSize;
         completedYDistance += yStepSize;
-        double completedDistance = Math.sqrt(Math.pow(completedXDistance, 2) + Math.pow(completedYDistance, 2));
+        double completedDistance = Math.hypot(completedXDistance, completedYDistance);
         double completion = Math.min(1, completedDistance / distance);
         log.trace("Step: x: {} y: {} tc: {} c: {}", xStepSize, yStepSize, timeCompletion, completion);
 
@@ -190,7 +190,7 @@ public class MouseMotion {
     int xDistance = xDest - lastMousePositionX;
     int yDistance = yDest - lastMousePositionY;
 
-    double initialDistance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    double initialDistance = Math.hypot(xDistance, yDistance);
     Pair<Flow, Long> flowTime = speedManager.getFlowWithTime(initialDistance);
     Flow flow = flowTime.x;
     long mouseMovementMs = flowTime.y;
@@ -209,7 +209,7 @@ public class MouseMotion {
       int currentDestinationY = limitByScreenHeight(yDest + overshoot.y);
       xDistance = currentDestinationX - lastMousePositionX;
       yDistance = currentDestinationY - lastMousePositionY;
-      double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+      double distance = Math.hypot(xDistance, yDistance);
       flow = speedManager.getFlowWithTime(distance).x;
       movements.add(
           new Movement(currentDestinationX, currentDestinationY, distance, xDistance, yDistance, mouseMovementMs, flow)
@@ -222,7 +222,7 @@ public class MouseMotion {
 
     xDistance = xDest - lastMousePositionX;
     yDistance = yDest - lastMousePositionY;
-    double distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
+    double distance = Math.hypot(xDistance, yDistance);
     movements.add(
         new Movement(xDest, yDest, distance, xDistance, yDistance, mouseMovementMs, flow)
     );

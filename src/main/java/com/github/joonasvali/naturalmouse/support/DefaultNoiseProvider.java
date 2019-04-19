@@ -23,7 +23,7 @@ public class DefaultNoiseProvider implements NoiseProvider {
     }
     double noiseX = 0;
     double noiseY = 0;
-    double stepSize = Math.sqrt(Math.pow(xStepSize, 2) + Math.pow(yStepSize, 2));
+    double stepSize = Math.hypot(xStepSize, yStepSize);
     double noisiness = Math.max(0, (8 - stepSize)) / 50;
     if (random.nextDouble() < noisiness) {
       noiseX = (random.nextDouble() - 0.5) * Math.max(0, (8 - stepSize)) / noisinessDivider;

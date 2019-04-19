@@ -33,9 +33,7 @@ public class DefaultOvershootManager implements OvershootManager {
 
   @Override
   public Point getOvershootAmount(double distanceToRealTargetX, double distanceToRealTargetY, long mouseMovementMs, int overshootsRemaining) {
-    double distanceToRealTarget = Math.sqrt(
-        Math.pow(distanceToRealTargetX, 2) + Math.pow(distanceToRealTargetY, 2)
-    );
+    double distanceToRealTarget = Math.hypot(distanceToRealTargetX, distanceToRealTargetY);
 
     double randomModifier = distanceToRealTarget / overshootRandomModifierDivider;
     //double speedPixelsPerSecond = distanceToRealTarget / mouseMovementMs * 1000; // TODO utilize speed
