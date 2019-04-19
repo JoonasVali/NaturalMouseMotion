@@ -18,7 +18,7 @@ public class MovementFactoryTest {
 
   @Test
   public void testSingleMovement() {
-    SpeedManager speedManager = createConstantSpeedManager();
+    SpeedManager speedManager = createConstantSpeedManager(100);
     OvershootManager overshootManager = createNoOvershootManager();
     MovementFactory factory = new MovementFactory(50, 51, speedManager, overshootManager, new Dimension(500, 500));
 
@@ -34,7 +34,7 @@ public class MovementFactoryTest {
 
   @Test
   public void testMultipleMovement() {
-    SpeedManager speedManager = createConstantSpeedManager();
+    SpeedManager speedManager = createConstantSpeedManager(100);
     OvershootManager overshootManager = createMultiOvershootManager();
     MovementFactory factory = new MovementFactory(50, 150, speedManager, overshootManager, new Dimension(500, 500));
 
@@ -70,9 +70,55 @@ public class MovementFactoryTest {
     Assert.assertArrayEquals(new double[]{100}, third.flow.getFlowCharacteristics(), SMALL_DELTA);
   }
 
-  protected SpeedManager createConstantSpeedManager() {
+  @Test
+  public void testZeroOffsetOvershootsRemovedFromEnd() {
+    SpeedManager speedManager = createConstantSpeedManager(64);
+    OvershootManager overshootManager = createOvershootManagerWithZeroOffsets();
+    MovementFactory factory = new MovementFactory(50, 150, speedManager, overshootManager, new Dimension(500, 500));
+
+    ArrayDeque<Movement> movements = factory.createMovements(new Point(100, 100));
+    Assert.assertEquals(4, movements.size()); // 3 overshoots and 1 final approach to destination
+
+    Movement first = movements.removeFirst();
+    Assert.assertEquals(55, first.destX);
+    Assert.assertEquals(155, first.destY);
+    Assert.assertEquals(64, first.time);
+    Assert.assertEquals(-45.0, first.xDistance, SMALL_DELTA);
+    Assert.assertEquals(55.0, first.yDistance, SMALL_DELTA);
+    Assert.assertEquals(Math.hypot(first.xDistance, first.yDistance), first.distance, SMALL_DELTA);
+    Assert.assertArrayEquals(new double[]{100}, first.flow.getFlowCharacteristics(), SMALL_DELTA);
+
+    Movement second = movements.removeFirst(); // 0-offset in the middle is not removed, this one actually hits destination.
+    Assert.assertEquals(50, second.destX);
+    Assert.assertEquals(150, second.destY);
+    Assert.assertEquals(32, second.time);
+    Assert.assertEquals(-5.0, second.xDistance, SMALL_DELTA);
+    Assert.assertEquals(-5.0, second.yDistance, SMALL_DELTA);
+    Assert.assertEquals(Math.hypot(second.xDistance, second.yDistance), second.distance, SMALL_DELTA);
+    Assert.assertArrayEquals(new double[]{100}, second.flow.getFlowCharacteristics(), SMALL_DELTA);
+
+    Movement third = movements.removeFirst();
+    Assert.assertEquals(51, third.destX);
+    Assert.assertEquals(151, third.destY);
+    Assert.assertEquals(16, third.time);
+    Assert.assertEquals(1, third.xDistance, SMALL_DELTA);
+    Assert.assertEquals(1, third.yDistance, SMALL_DELTA);
+    Assert.assertEquals(Math.hypot(third.xDistance, third.yDistance), third.distance, SMALL_DELTA);
+    Assert.assertArrayEquals(new double[]{100}, third.flow.getFlowCharacteristics(), SMALL_DELTA);
+
+    Movement fourth = movements.removeFirst();
+    Assert.assertEquals(50, fourth.destX);
+    Assert.assertEquals(150, fourth.destY);
+    Assert.assertEquals(2, fourth.time); // Overshoots with 8 and 4 were removed, this one got assigned 2.
+    Assert.assertEquals(-1, fourth.xDistance, SMALL_DELTA);
+    Assert.assertEquals(-1, fourth.yDistance, SMALL_DELTA);
+    Assert.assertEquals(Math.hypot(fourth.xDistance, fourth.yDistance), fourth.distance, SMALL_DELTA);
+    Assert.assertArrayEquals(new double[]{100}, fourth.flow.getFlowCharacteristics(), SMALL_DELTA);
+  }
+
+  protected SpeedManager createConstantSpeedManager(long time) {
     double[] characteristics = {100};
-    return distance -> new Pair<>(new Flow(characteristics), 100L);
+    return distance -> new Pair<>(new Flow(characteristics), time);
   }
 
   private OvershootManager createNoOvershootManager() {
@@ -101,6 +147,33 @@ public class MovementFactoryTest {
       @Override
       public int getOvershoots(Flow flow, long mouseMovementMs, double distance) {
         return 2;
+      }
+
+      @Override
+      public Point getOvershootAmount(double distanceToRealTargetX, double distanceToRealTargetY, long mouseMovementMs, int overshootsRemaining) {
+        return deque.removeFirst();
+      }
+
+      @Override
+      public long deriveNextMouseMovementTimeMs(long mouseMovementMs, int overshootsRemaining) {
+        return mouseMovementMs / 2;
+      }
+    };
+  }
+
+  private OvershootManager createOvershootManagerWithZeroOffsets() {
+    return new OvershootManager() {
+      Point[] points = new Point[] {
+          new Point(5, 5),
+          new Point(0, 0),
+          new Point(1, 1),
+          new Point(0, 0),
+          new Point(0, 0),
+      };
+      ArrayDeque<Point> deque = new ArrayDeque<>(Arrays.asList(points));
+      @Override
+      public int getOvershoots(Flow flow, long mouseMovementMs, double distance) {
+        return 5;
       }
 
       @Override
