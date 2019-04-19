@@ -3,6 +3,8 @@ package com.github.joonasvali.naturalmouse.api;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
 import com.github.joonasvali.naturalmouse.support.Flow;
 import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
+import com.github.joonasvali.naturalmouse.support.mousemotion.Movement;
+import com.github.joonasvali.naturalmouse.support.mousemotion.MovementFactory;
 import com.github.joonasvali.naturalmouse.util.MathUtil;
 import com.github.joonasvali.naturalmouse.util.Pair;
 import org.slf4j.Logger;
@@ -82,7 +84,8 @@ public class MouseMotion {
     updateMouseInfo();
     log.info("Starting to move mouse to ({}, {}), current position: ({}, {})", xDest, yDest, mousePosition.x, mousePosition.y);
 
-    ArrayDeque<Movement> movements = createMovements();
+    MovementFactory movementFactory = new MovementFactory(xDest, yDest, speedManager, overshootManager, screenSize);
+    ArrayDeque<Movement> movements = movementFactory.createMovements(mousePosition);
     int overshoots = movements.size() - 1;
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
       if (movements.isEmpty()) {
@@ -91,7 +94,7 @@ public class MouseMotion {
         updateMouseInfo();
         log.debug("Populating movement array.");
         log.info("Temp: " + mousePosition.x + " " + mousePosition.y);
-        movements = createMovements();
+        movements = movementFactory.createMovements(mousePosition);
         if (log.isTraceEnabled()) {
           log.trace("Movement array: " + movements);
         }
@@ -210,71 +213,6 @@ public class MouseMotion {
     log.info("Mouse movement to ({}, {}) completed", xDest, yDest);
   }
 
-  private ArrayDeque<Movement> createMovements() {
-    ArrayDeque<Movement> movements = new ArrayDeque<>();
-    int lastMousePositionX = mousePosition.x;
-    int lastMousePositionY = mousePosition.y;
-    int xDistance = xDest - lastMousePositionX;
-    int yDistance = yDest - lastMousePositionY;
-    log.info("temp 2: " + xDistance + " " + yDistance);
-
-    double initialDistance = Math.hypot(xDistance, yDistance);
-    Pair<Flow, Long> flowTime = speedManager.getFlowWithTime(initialDistance);
-    Flow flow = flowTime.x;
-    long mouseMovementMs = flowTime.y;
-    int overshoots = overshootManager.getOvershoots(flow, mouseMovementMs, initialDistance);
-
-    if (overshoots == 0) {
-      log.info("Temp 3 overshoots = 0");
-      movements.add(new Movement(xDest, yDest, initialDistance, xDistance, yDistance, mouseMovementMs, flow));
-      return movements;
-    }
-
-    for (int i = overshoots; i > 0; i--) {
-      Point overshoot = overshootManager.getOvershootAmount(
-          xDest - lastMousePositionX, yDest - lastMousePositionY, mouseMovementMs, i
-      );
-
-      int currentDestinationX = limitByScreenWidth(xDest + overshoot.x);
-      int currentDestinationY = limitByScreenHeight(yDest + overshoot.y);
-      xDistance = currentDestinationX - lastMousePositionX;
-      yDistance = currentDestinationY - lastMousePositionY;
-      double distance = Math.hypot(xDistance, yDistance);
-      flow = speedManager.getFlowWithTime(distance).x;
-      movements.add(
-          new Movement(currentDestinationX, currentDestinationY, distance, xDistance, yDistance, mouseMovementMs, flow)
-      );
-      lastMousePositionX = currentDestinationX;
-      lastMousePositionY = currentDestinationY;
-      // Apply for the next overshoot if exists.
-      mouseMovementMs = overshootManager.deriveNextMouseMovementTimeMs(mouseMovementMs, i - 1);
-    }
-
-    Iterator<Movement> it = movements.descendingIterator();
-
-    boolean remove = true;
-    // Remove overshoots from the end, which are matching the final destination, but keep those in middle of motion.
-    while (it.hasNext() && remove) {
-      Movement movement = it.next();
-      lastMousePositionX = movement.destX;
-      lastMousePositionY = movement.destY;
-      if (movement.destX == xDest && movement.destY == yDest) {
-        it.remove();
-      } else {
-        remove = false;
-      }
-    }
-
-    xDistance = xDest - lastMousePositionX;
-    yDistance = yDest - lastMousePositionY;
-    double distance = Math.hypot(xDistance, yDistance);
-    movements.add(
-        new Movement(xDest, yDest, distance, xDistance, yDistance, mouseMovementMs, flow)
-    );
-
-    return movements;
-  }
-
   private int limitByScreenWidth(int value) {
     return Math.max(0, Math.min(screenSize.width - 1, value));
   }
@@ -296,34 +234,4 @@ public class MouseMotion {
     mousePosition = mouseInfo.getMousePosition();
   }
 
-  private static class Movement {
-    private final int destX;
-    private final int destY;
-    private final double distance;
-    private final double xDistance;
-    private final double yDistance;
-    private final long time;
-    private final Flow flow;
-
-    public Movement(int destX, int destY, double distance, double xDistance, double yDistance, long time, Flow flow) {
-      this.destX = destX;
-      this.destY = destY;
-      this.distance = distance;
-      this.xDistance = xDistance;
-      this.yDistance = yDistance;
-      this.time = time;
-      this.flow = flow;
-    }
-
-    @Override
-    public String toString() {
-      return "Movement{" +
-          "destX=" + destX +
-          ", destY=" + destY +
-          ", xDistance=" + xDistance +
-          ", yDistance=" + yDistance +
-          ", time=" + time +
-          '}';
-    }
-  }
 }
