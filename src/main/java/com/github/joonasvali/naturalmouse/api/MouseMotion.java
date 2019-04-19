@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.awt.*;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -88,7 +90,11 @@ public class MouseMotion {
         // Then just re-attempt from mouse new position.
         updateMouseInfo();
         log.debug("Populating movement array.");
+        log.info("Temp: " + mousePosition.x + " " + mousePosition.y);
         movements = createMovements();
+        if (log.isTraceEnabled()) {
+          log.trace("Movement array: " + movements);
+        }
       }
 
       Movement movement = movements.removeFirst();
@@ -102,7 +108,7 @@ public class MouseMotion {
       Flow flow = movement.flow;
       double xDistance = movement.xDistance;
       double yDistance = movement.yDistance;
-      log.debug("Movement arc length computed to {} and time predicted to {} ms", (int) distance, mouseMovementMs);
+      log.debug("Movement arc length computed to {} and time predicted to {} ms", distance, mouseMovementMs);
 
       /* Number of steps is calculated from the movement time and limited by minimal amount of steps
          (should have at least MIN_STEPS) and distance (shouldn't have more steps than pixels travelled) */
@@ -153,12 +159,19 @@ public class MouseMotion {
         log.trace("SimulatedMouse: [{}, {}]", simulatedMouseX, simulatedMouseY);
 
         long endTime = startTime + stepTime * (i + 1);
-        int mousePosX = MathUtil.roundTowards(simulatedMouseX +
+        int mousePosX = MathUtil.roundTowards(
+            simulatedMouseX +
             deviation.getX() * deviationMultiplierX * effectFadeMultiplier +
-            noiseX * effectFadeMultiplier, movement.destX);
-        int mousePosY = MathUtil.roundTowards(simulatedMouseY +
+            noiseX * effectFadeMultiplier,
+            movement.destX
+        );
+
+        int mousePosY = MathUtil.roundTowards(
+            simulatedMouseY +
             deviation.getY() * deviationMultiplierY * effectFadeMultiplier +
-            noiseY * effectFadeMultiplier, movement.destY);
+            noiseY * effectFadeMultiplier,
+            movement.destY
+        );
 
         mousePosX = limitByScreenWidth(mousePosX);
         mousePosY = limitByScreenHeight(mousePosY);
@@ -175,7 +188,21 @@ public class MouseMotion {
         sleepAround(Math.max(timeLeft, 0), 0);
       }
       updateMouseInfo();
+
       if (mousePosition.x != movement.destX || mousePosition.y != movement.destY) {
+        // It's possible that mouse is manually moved or for some other reason.
+        // Let's start next step from pre-calculated location to prevent errors from accumulating.
+        // But print warning as this is last safety net and shouldn't be used.
+        log.warn("Mouse off from step endpoint (adjustment was done) " +
+            "x: (" + mousePosition.x + " -> " + movement.destX + ") " +
+            "y: (" + mousePosition.y + " -> " + movement.destY + ") "
+        );
+        systemCalls.setMousePosition(movement.destX, movement.destY);
+        updateMouseInfo();
+      }
+
+      if (mousePosition.x != xDest || mousePosition.y != yDest) {
+        // We are dealing with overshoot, let's sleep a bit to simulate human reaction time.
         sleepAround(reactionTimeBaseMs, reactionTimeVariationMs);
       }
       log.debug("Steps completed, mouse at " + mousePosition.x + " " + mousePosition.y);
@@ -189,6 +216,7 @@ public class MouseMotion {
     int lastMousePositionY = mousePosition.y;
     int xDistance = xDest - lastMousePositionX;
     int yDistance = yDest - lastMousePositionY;
+    log.info("temp 2: " + xDistance + " " + yDistance);
 
     double initialDistance = Math.hypot(xDistance, yDistance);
     Pair<Flow, Long> flowTime = speedManager.getFlowWithTime(initialDistance);
@@ -197,6 +225,7 @@ public class MouseMotion {
     int overshoots = overshootManager.getOvershoots(flow, mouseMovementMs, initialDistance);
 
     if (overshoots == 0) {
+      log.info("Temp 3 overshoots = 0");
       movements.add(new Movement(xDest, yDest, initialDistance, xDistance, yDistance, mouseMovementMs, flow));
       return movements;
     }
@@ -205,6 +234,7 @@ public class MouseMotion {
       Point overshoot = overshootManager.getOvershootAmount(
           xDest - lastMousePositionX, yDest - lastMousePositionY, mouseMovementMs, i
       );
+
       int currentDestinationX = limitByScreenWidth(xDest + overshoot.x);
       int currentDestinationY = limitByScreenHeight(yDest + overshoot.y);
       xDistance = currentDestinationX - lastMousePositionX;
@@ -218,6 +248,21 @@ public class MouseMotion {
       lastMousePositionY = currentDestinationY;
       // Apply for the next overshoot if exists.
       mouseMovementMs = overshootManager.deriveNextMouseMovementTimeMs(mouseMovementMs, i - 1);
+    }
+
+    Iterator<Movement> it = movements.descendingIterator();
+
+    boolean remove = true;
+    // Remove overshoots from the end, which are matching the final destination, but keep those in middle of motion.
+    while (it.hasNext() && remove) {
+      Movement movement = it.next();
+      lastMousePositionX = movement.destX;
+      lastMousePositionY = movement.destY;
+      if (movement.destX == xDest && movement.destY == yDest) {
+        it.remove();
+      } else {
+        remove = false;
+      }
     }
 
     xDistance = xDest - lastMousePositionX;
@@ -268,6 +313,17 @@ public class MouseMotion {
       this.yDistance = yDistance;
       this.time = time;
       this.flow = flow;
+    }
+
+    @Override
+    public String toString() {
+      return "Movement{" +
+          "destX=" + destX +
+          ", destY=" + destY +
+          ", xDistance=" + xDistance +
+          ", yDistance=" + yDistance +
+          ", time=" + time +
+          '}';
     }
   }
 }
