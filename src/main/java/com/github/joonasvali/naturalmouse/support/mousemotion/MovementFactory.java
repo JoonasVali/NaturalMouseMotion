@@ -42,6 +42,7 @@ public class MovementFactory {
     int overshoots = overshootManager.getOvershoots(flow, mouseMovementMs, initialDistance);
 
     if (overshoots == 0) {
+      log.debug("No overshoots for movement from ({}, {}) -> ({}, {})", currentMousePosition.x, currentMousePosition.y, xDest, yDest);
       movements.add(new Movement(xDest, yDest, initialDistance, xDistance, yDistance, mouseMovementMs, flow));
       return movements;
     }
@@ -50,7 +51,6 @@ public class MovementFactory {
       Point overshoot = overshootManager.getOvershootAmount(
           xDest - lastMousePositionX, yDest - lastMousePositionY, mouseMovementMs, i
       );
-
       int currentDestinationX = limitByScreenWidth(xDest + overshoot.x);
       int currentDestinationY = limitByScreenHeight(yDest + overshoot.y);
       xDistance = currentDestinationX - lastMousePositionX;
@@ -72,9 +72,10 @@ public class MovementFactory {
     // Remove overshoots from the end, which are matching the final destination, but keep those in middle of motion.
     while (it.hasNext() && remove) {
       Movement movement = it.next();
-      lastMousePositionX = movement.destX;
-      lastMousePositionY = movement.destY;
       if (movement.destX == xDest && movement.destY == yDest) {
+        lastMousePositionX = movement.destX - movement.xDistance;
+        lastMousePositionY = movement.destY - movement.yDistance;
+        log.trace("Pruning 0-overshoot movement (Movement to target) from the end. " + movement);
         it.remove();
       } else {
         remove = false;
@@ -84,9 +85,15 @@ public class MovementFactory {
     xDistance = xDest - lastMousePositionX;
     yDistance = yDest - lastMousePositionY;
     double distance = Math.hypot(xDistance, yDistance);
-    movements.add(
-        new Movement(xDest, yDest, distance, xDistance, yDistance, mouseMovementMs, flow)
+    Pair<Flow, Long> movementToTargetFlowTime = speedManager.getFlowWithTime(distance);
+    long finalMovementTime = overshootManager.deriveNextMouseMovementTimeMs(movementToTargetFlowTime.y, 0);
+    Movement finalMove = new Movement(
+        xDest, yDest, distance, xDistance, yDistance, finalMovementTime, movementToTargetFlowTime.x
     );
+    movements.add(finalMove);
+
+    log.debug("{} movements returned for move ({}, {}) -> ({}, {})", movements.size(), currentMousePosition.x, currentMousePosition.y, xDest, yDest);
+    log.trace("Movements are: {} ", movements);
 
     return movements;
   }
