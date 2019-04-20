@@ -3,6 +3,12 @@ package com.github.joonavali.naturalmouse;
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.support.DefaultOvershootManager;
 import com.github.joonasvali.naturalmouse.support.ScreenAdjustedNature;
+import com.github.joonavali.naturalmouse.testutils.MockDeviationProvider;
+import com.github.joonavali.naturalmouse.testutils.MockMouse;
+import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
+import com.github.joonavali.naturalmouse.testutils.MockRandom;
+import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
+import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,19 +18,19 @@ import java.util.ArrayList;
 
 public class ScreenAdjustedNatureTest {
   MouseMotionFactory factory;
-  MouseMotionTestBase.MockMouse mouse;
+  MockMouse mouse;
 
   @Before
   public void setup() {
     factory = new MouseMotionFactory();
     factory.setNature(new ScreenAdjustedNature(new Dimension(100, 100), new Point(50, 50)));
     ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
-    mouse = new MouseMotionTestBase.MockMouse(60, 60);
-    factory.setSystemCalls(new MouseMotionTestBase.MockSystemCalls(mouse));
-    factory.setNoiseProvider(new MouseMotionTestBase.MockNoiseProvider());
-    factory.setDeviationProvider(new MouseMotionTestBase.MockDeviationProvider());
-    factory.setSpeedManager(new MouseMotionTestBase.MockSpeedManager());
-    factory.setRandom(new MouseMotionTestBase.MockRandom());
+    mouse = new MockMouse(60, 60);
+    factory.setSystemCalls(new MockSystemCalls(mouse, 800, 500));
+    factory.setNoiseProvider(new MockNoiseProvider());
+    factory.setDeviationProvider(new MockDeviationProvider());
+    factory.setSpeedManager(new MockSpeedManager());
+    factory.setRandom(new MockRandom(new double[]{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1}));
     factory.setMouseInfo(mouse);
   }
 
