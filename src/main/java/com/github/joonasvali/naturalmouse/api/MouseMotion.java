@@ -93,11 +93,7 @@ public class MouseMotion {
         // Then just re-attempt from mouse new position.
         updateMouseInfo();
         log.debug("Populating movement array.");
-        log.info("Temp: " + mousePosition.x + " " + mousePosition.y);
         movements = movementFactory.createMovements(mousePosition);
-        if (log.isTraceEnabled()) {
-          log.trace("Movement array: {}", movements);
-        }
       }
 
       Movement movement = movements.removeFirst();
