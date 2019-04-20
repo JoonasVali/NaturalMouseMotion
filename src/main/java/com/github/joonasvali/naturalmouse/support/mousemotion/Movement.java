@@ -7,12 +7,12 @@ public class Movement {
   public final int destX;
   public final int destY;
   public final double distance;
-  public final double xDistance;
-  public final double yDistance;
+  public final int xDistance;
+  public final int yDistance;
   public final long time;
   public final Flow flow;
 
-  public Movement(int destX, int destY, double distance, double xDistance, double yDistance, long time, Flow flow) {
+  public Movement(int destX, int destY, double distance, int xDistance, int yDistance, long time, Flow flow) {
     this.destX = destX;
     this.destY = destY;
     this.distance = distance;

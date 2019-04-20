@@ -96,7 +96,7 @@ public class MouseMotion {
         log.info("Temp: " + mousePosition.x + " " + mousePosition.y);
         movements = movementFactory.createMovements(mousePosition);
         if (log.isTraceEnabled()) {
-          log.trace("Movement array: " + movements);
+          log.trace("Movement array: {}", movements);
         }
       }
 
@@ -195,7 +195,7 @@ public class MouseMotion {
       if (mousePosition.x != movement.destX || mousePosition.y != movement.destY) {
         // It's possible that mouse is manually moved or for some other reason.
         // Let's start next step from pre-calculated location to prevent errors from accumulating.
-        // But print warning as this is last safety net and shouldn't be used.
+        // But print warning as this is not expected behavior.
         log.warn("Mouse off from step endpoint (adjustment was done) " +
             "x: (" + mousePosition.x + " -> " + movement.destX + ") " +
             "y: (" + mousePosition.y + " -> " + movement.destY + ") "

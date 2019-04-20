@@ -37,12 +37,12 @@ public class FactoryTemplates {
     DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(3);
     overshootManager.setMinDistanceForOvershoots(3);
-    overshootManager.setMinOvershootMovementMs(500);
+    overshootManager.setMinOvershootMovementMs(400);
     overshootManager.setOvershootRandomModifierDivider(DefaultOvershootManager.OVERSHOOT_RANDOM_MODIFIER_DIVIDER / 2);
     overshootManager.setOvershootSpeedupDivider(DefaultOvershootManager.OVERSHOOT_SPEEDUP_DIVIDER * 2);
 
     factory.getNature().setTimeToStepsDivider(DefaultMouseMotionNature.TIME_TO_STEPS_DIVIDER - 2);
-    manager.setMouseMovementBaseTimeMs(1200);
+    manager.setMouseMovementBaseTimeMs(1000);
     factory.setSpeedManager(manager);
     return factory;
   }
