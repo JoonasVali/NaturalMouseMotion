@@ -1,21 +1,20 @@
 package com.github.joonavali.naturalmouse;
 
 import com.github.joonasvali.naturalmouse.api.DeviationProvider;
-import com.github.joonasvali.naturalmouse.api.MouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.api.NoiseProvider;
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
 import com.github.joonasvali.naturalmouse.api.SystemCalls;
-import com.github.joonasvali.naturalmouse.support.DefaultMouseInfoAccessor;
-import com.github.joonasvali.naturalmouse.support.DefaultSystemCalls;
-import com.github.joonasvali.naturalmouse.support.DoublePoint;
-import com.github.joonasvali.naturalmouse.support.Flow;
-import com.github.joonasvali.naturalmouse.util.Pair;
+import com.github.joonavali.naturalmouse.testutils.MockDeviationProvider;
+import com.github.joonavali.naturalmouse.testutils.MockMouse;
+import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
+import com.github.joonavali.naturalmouse.testutils.MockRandom;
+import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
+import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
 import org.junit.Assert;
 import org.junit.Before;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class MouseMotionTestBase {
@@ -34,11 +33,11 @@ public class MouseMotionTestBase {
   public void setup() {
     mouse = new MockMouse();
     factory = new MouseMotionFactory();
-    systemCalls = new MockSystemCalls(mouse);
+    systemCalls = new MockSystemCalls(mouse, SCREEN_WIDTH, SCREEN_HEIGHT);
     deviationProvider = new MockDeviationProvider();
     noiseProvider = new MockNoiseProvider();
     speedManager = new MockSpeedManager();
-    random = new MockRandom();
+    random = new MockRandom(new double[]{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1});
 
     factory.setSystemCalls(systemCalls);
     factory.setDeviationProvider(deviationProvider);
@@ -55,97 +54,5 @@ public class MouseMotionTestBase {
     Assert.assertEquals(y, pos.getY(), SMALL_DELTA);
   }
 
-  protected static class MockSystemCalls extends DefaultSystemCalls {
-    private final MockMouse mockMouse;
 
-    public MockSystemCalls(MockMouse mockMouse) {
-      super(null);
-      this.mockMouse = mockMouse;
-    }
-
-    @Override
-    public long currentTimeMillis() {
-      return 0;
-    }
-
-    @Override
-    public void sleep(long time) throws InterruptedException {
-      // Do nothing.
-    }
-
-    @Override
-    public Dimension getScreenSize() {
-      return new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT);
-    }
-
-    @Override
-    public void setMousePosition(int x, int y) {
-      mockMouse.mouseMove(x, y);
-    }
-  }
-
-  protected static class MockDeviationProvider implements DeviationProvider {
-    @Override
-    public DoublePoint getDeviation(double totalDistanceInPixels, double completionFraction) {
-      return new DoublePoint(0, 0);
-    }
-  }
-
-  protected static class MockSpeedManager implements SpeedManager {
-
-    @Override
-    public Pair<Flow, Long> getFlowWithTime(double distance) {
-      double[] characteristics = {100};
-      return new Pair<Flow, Long>(new Flow(characteristics), 10L);
-    }
-  }
-
-  protected SpeedManager createMockSpeedManager() {
-    double[] characteristics = {100};
-    return distance -> new Pair<Flow, Long>(new Flow(characteristics), 10L);
-  }
-
-  protected static class MockNoiseProvider implements NoiseProvider {
-    @Override
-    public DoublePoint getNoise(Random random, double xStepSize, double yStepSize) {
-      return new DoublePoint(0, 0);
-    }
-  }
-
-  protected static class MockMouse extends DefaultMouseInfoAccessor {
-    private final ArrayList<Point> mouseMovements = new ArrayList<>();
-
-    MockMouse() {
-      mouseMovements.add(new Point(0, 0));
-    }
-
-    MockMouse(int posX, int posY) {
-      mouseMovements.add(new Point(posX, posY));
-    }
-
-    public synchronized void mouseMove(int x, int y) {
-      mouseMovements.add(new Point(x, y));
-    }
-
-    @Override
-    public Point getMousePosition() {
-      return mouseMovements.get(mouseMovements.size() - 1);
-    }
-
-    public ArrayList<Point> getMouseMovements() {
-      return mouseMovements;
-    }
-  }
-
-  protected static class MockRandom extends Random {
-    int index = 0;
-    double[] nums = new double[]{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
-
-    @Override
-    public double nextDouble() {
-      int nextIndex = index++;
-      index %= nums.length;
-      return nums[nextIndex];
-    }
-  }
 }

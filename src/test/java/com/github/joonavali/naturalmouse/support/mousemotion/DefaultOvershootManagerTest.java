@@ -2,6 +2,7 @@ package com.github.joonavali.naturalmouse.support.mousemotion;
 
 import com.github.joonasvali.naturalmouse.support.DefaultOvershootManager;
 import com.github.joonasvali.naturalmouse.support.Flow;
+import com.github.joonavali.naturalmouse.testutils.MockRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import java.util.Random;
 public class DefaultOvershootManagerTest {
   @Test
   public void returnsSetOvershootNumber() {
-    Random random = createRandom(new double[]{0.1, 0.2, 0.3, 0.4, 0.5});
+    Random random = new MockRandom(new double[]{0.1, 0.2, 0.3, 0.4, 0.5});
     DefaultOvershootManager manager = new DefaultOvershootManager(random);
 
     int overshoots = manager.getOvershoots(new Flow(new double[]{100}), 200, 1000);
@@ -29,19 +30,19 @@ public class DefaultOvershootManagerTest {
     Point overshoot3;
 
     {
-      Random random = createRandom(new double[]{0.1});
+      Random random = new MockRandom(new double[]{0.1});
       DefaultOvershootManager manager = new DefaultOvershootManager(random);
       overshoot1 = manager.getOvershootAmount(1000, 500, 1000, 1);
     }
 
     {
-      Random random = createRandom(new double[]{0.1});
+      Random random = new MockRandom(new double[]{0.1});
       DefaultOvershootManager manager = new DefaultOvershootManager(random);
       overshoot2 = manager.getOvershootAmount(1000, 500, 1000, 2);
     }
 
     {
-      Random random = createRandom(new double[]{0.1});
+      Random random = new MockRandom(new double[]{0.1});
       DefaultOvershootManager manager = new DefaultOvershootManager(random);
       overshoot3 = manager.getOvershootAmount(1000, 500, 1000, 3);
     }
@@ -52,7 +53,7 @@ public class DefaultOvershootManagerTest {
 
   @Test
   public void nextMouseMovementTimeIsBasedOnCurrentMouseMovementMs() {
-    Random random = createRandom(new double[]{0.1, 0.2, 0.3, 0.4, 0.5});
+    Random random = new MockRandom(new double[]{0.1, 0.2, 0.3, 0.4, 0.5});
     DefaultOvershootManager manager = new DefaultOvershootManager(random);
 
     {
@@ -78,7 +79,7 @@ public class DefaultOvershootManagerTest {
 
   @Test
   public void nextMouseMovementTimeHasMinValue() {
-    Random random = createRandom(new double[]{0.1, 0.2, 0.3, 0.4, 0.5});
+    Random random = new MockRandom(new double[]{0.1, 0.2, 0.3, 0.4, 0.5});
     DefaultOvershootManager manager = new DefaultOvershootManager(random);
 
     {
@@ -87,16 +88,5 @@ public class DefaultOvershootManagerTest {
       long nextTime = manager.deriveNextMouseMovementTimeMs(1000, 3);
       Assert.assertEquals(1500, nextTime);
     }
-  }
-
-  private Random createRandom(double[] doubles) {
-    return new Random() {
-      int i = 0;
-
-      @Override
-      public double nextDouble() {
-        return doubles[i++ % doubles.length];
-      }
-    };
   }
 }

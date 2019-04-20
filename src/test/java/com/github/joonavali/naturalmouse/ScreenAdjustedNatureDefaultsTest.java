@@ -1,26 +1,27 @@
 package com.github.joonavali.naturalmouse;
 
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
-import com.github.joonasvali.naturalmouse.api.SystemCalls;
 import com.github.joonasvali.naturalmouse.support.DefaultMouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.support.DefaultMouseMotionNature;
 import com.github.joonasvali.naturalmouse.support.DefaultOvershootManager;
 import com.github.joonasvali.naturalmouse.support.DefaultSystemCalls;
 import com.github.joonasvali.naturalmouse.support.ScreenAdjustedNature;
+import com.github.joonavali.naturalmouse.testutils.MockDeviationProvider;
+import com.github.joonavali.naturalmouse.testutils.MockMouse;
+import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
+import com.github.joonavali.naturalmouse.testutils.MockRandom;
+import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
+import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @RunWith(PowerMockRunner.class)
@@ -32,12 +33,12 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 public class ScreenAdjustedNatureDefaultsTest {
   private MouseMotionFactory factory;
-  private MouseMotionTestBase.MockMouse mouse;
+  private MockMouse mouse;
 
   @Before
   public void setup() throws Exception {
-    mouse = new MouseMotionTestBase.MockMouse(60, 60);
-    DefaultSystemCalls mockSystemCalls = new MouseMotionTestBase.MockSystemCalls(mouse);
+    mouse = new MockMouse(60, 60);
+    DefaultSystemCalls mockSystemCalls = new MockSystemCalls(mouse, 800, 500);
     whenNew(DefaultSystemCalls.class).withAnyArguments().thenReturn(mockSystemCalls);
     whenNew(DefaultMouseInfoAccessor.class).withAnyArguments().thenReturn(mouse);
 
@@ -45,10 +46,10 @@ public class ScreenAdjustedNatureDefaultsTest {
     factory = new MouseMotionFactory();
     factory.setNature(new ScreenAdjustedNature(new Dimension(100, 100), new Point(50, 50)));
     ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
-    factory.setNoiseProvider(new MouseMotionTestBase.MockNoiseProvider());
-    factory.setDeviationProvider(new MouseMotionTestBase.MockDeviationProvider());
-    factory.setSpeedManager(new MouseMotionTestBase.MockSpeedManager());
-    factory.setRandom(new MouseMotionTestBase.MockRandom());
+    factory.setNoiseProvider(new MockNoiseProvider());
+    factory.setDeviationProvider(new MockDeviationProvider());
+    factory.setSpeedManager(new MockSpeedManager());
+    factory.setRandom(new MockRandom(new double[]{0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1}));
 
   }
 
