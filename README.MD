@@ -82,4 +82,19 @@ In `MouseInfoAccessor` you need to implement the `getMousePosition()` method to 
 
 And that's basically it, rest is handled by NaturalMouseMotion internals.
 
+## Troubleshooting
+
+### The mouse gets stuck trying to move to destination or won't end up on correct pixel.
+
+There are several possible causes to that behavior:
+
+* Some JDK versions are actually buggy and the `Robot` class, which is moving the mouse by default in NaturalMouseMotion does not work that well on them, depending on the hardware in the client computer.
+[Java bug on windows 10 (fixed since Java 11)](https://bugs.openjdk.java.net/browse/JDK-8196030) - [stackoverflow discussion](https://stackoverflow.com/questions/48837741/java-robot-mousemovex-y-not-producing-correct-results/48847100)
+
+* There is some other program moving the mouse in a separate process or other thread moving the mouse in the same process working against the goal of the library. Solution is to make sure this doesn't happen.
+* You accidentally move the mouse manually during the process. (This shouldn't cause a lasting effect, just temporary hiccup in the trajectory)
+* You have altered MouseMotionFactory configuration in a way that causes it to get stuck.
+* There might be some security setting in your computer preventing the mouse from moving:
+   [Robot issue on Mac OS Mojave](https://bugs.openjdk.java.net/browse/JDK-8218487)
+* There's an actual bug somewhere in the NaturalMouseMotion library that needs fixing on the library side.
 

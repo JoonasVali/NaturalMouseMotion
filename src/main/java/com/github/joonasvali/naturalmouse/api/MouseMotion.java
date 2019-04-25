@@ -90,9 +90,10 @@ public class MouseMotion {
     while (mousePosition.x != xDest || mousePosition.y != yDest) {
       if (movements.isEmpty()) {
         // This shouldn't usually happen, but it's possible that somehow we won't end up on the target,
-        // Then just re-attempt from mouse new position.
+        // Then just re-attempt from mouse new position. (There are known JDK bugs, that can cause sending the cursor
+        // to wrong pixel)
         updateMouseInfo();
-        log.debug("Populating movement array.");
+        log.warn("Re-populating movement array. Did not end up on target pixel.");
         movements = movementFactory.createMovements(mousePosition);
       }
 

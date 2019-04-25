@@ -12,5 +12,6 @@ public interface MouseInfoAccessor {
    * It is recommended not to save this Point anywhere as it may or may not change its coordinates.
    * @return the current mouse position
    */
+
   Point getMousePosition();
 }
