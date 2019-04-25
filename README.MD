@@ -88,7 +88,7 @@ And that's basically it, rest is handled by NaturalMouseMotion internals.
 
 There are several possible causes to that behavior:
 
-* Some JDK versions are actually buggy and the `Robot` class, which is moving the mouse by default in NaturalMouseMotion does not work that well on them, depending on the hardware in the client computer.
+* Some JDK versions are actually buggy and the `Robot` class, which is moving the mouse by default in NaturalMouseMotion does not work that well on them, depending on the hardware in the client computer. You can use `SystemDiagnosis.validateMouseMovement();` to test if the mouse positioning works as intended.
 [Java bug on windows 10 (fixed since Java 11)](https://bugs.openjdk.java.net/browse/JDK-8196030) - [stackoverflow discussion](https://stackoverflow.com/questions/48837741/java-robot-mousemovex-y-not-producing-correct-results/48847100)
 
 * There is some other program moving the mouse in a separate process or other thread moving the mouse in the same process working against the goal of the library. Solution is to make sure this doesn't happen.

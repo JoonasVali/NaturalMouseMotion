@@ -6,14 +6,11 @@ import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
 import com.github.joonasvali.naturalmouse.support.mousemotion.Movement;
 import com.github.joonasvali.naturalmouse.support.mousemotion.MovementFactory;
 import com.github.joonasvali.naturalmouse.util.MathUtil;
-import com.github.joonasvali.naturalmouse.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.awt.*;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -23,6 +20,7 @@ import java.util.Random;
  */
 public class MouseMotion {
   private static final Logger log = LoggerFactory.getLogger(MouseMotion.class);
+  private static final int SLEEP_AFTER_ADJUSTMENT_MS = 2;
   private final int minSteps;
   private final int effectFadeSteps;
   private final int reactionTimeBaseMs;
@@ -198,6 +196,8 @@ public class MouseMotion {
             "y: (" + mousePosition.y + " -> " + movement.destY + ") "
         );
         systemCalls.setMousePosition(movement.destX, movement.destY);
+        // Let's wait a bit before getting mouse info.
+        sleepAround(SLEEP_AFTER_ADJUSTMENT_MS, 0);
         updateMouseInfo();
       }
 
