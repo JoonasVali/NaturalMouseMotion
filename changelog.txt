@@ -1,3 +1,9 @@
+## v 2.0.1
+Feature: When mouse somehow is not ending up on the correct pixel, an adjustment is made and warning logged, so the library is still useful even when the setup is not working correctly or JDK bug is run into.
+Fix: Fixed issue with overshoot movements being made with movement length of 0 and as a result waiting more than necessary in total.
+Fix: Fixed issue with rounding to closest pixels.
+Change: Template GrannyMotion is about 20% faster now.
+
 ## v 2.0.0
 Breaking: A lot of interfaces were moved under api package, so packages have changed, needing adjustment after upgrade to this version.
 Feature: Added concept of flow and speed, which guide how much the mouse is progressing at any given time.
