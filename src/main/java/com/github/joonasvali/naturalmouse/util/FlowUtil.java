@@ -1,5 +1,6 @@
 package com.github.joonasvali.naturalmouse.util;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 public class FlowUtil {
@@ -57,8 +58,7 @@ public class FlowUtil {
 
       double completion = (stepLength - countToNextStep) / (double)stepLength;
 
-      double value = fillValueBottom * (1 - completion) + fillValueTop * completion;
-      result[i] = modifier.apply(value);
+      result[i] = fillValueBottom * (1 - completion) + fillValueTop * completion;
 
       countToNextStep--;
 
@@ -68,11 +68,11 @@ public class FlowUtil {
       }
     }
 
-    if (tempLength == targetLength) {
-      return result;
+    if (tempLength != targetLength) {
+      result = reduceFlow(result, targetLength);
     }
 
-    return reduceFlow(result, targetLength);
+    return Arrays.stream(result).map(modifier::apply).toArray();
   }
 
   /**
