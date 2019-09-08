@@ -1,4 +1,4 @@
-package com.github.joonavali.naturalmouse;
+package com.github.joonavali.naturalmouse.screenadjustednature;
 
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.support.DefaultOvershootManager;
@@ -16,16 +16,16 @@ import org.junit.Test;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ScreenAdjustedNatureTest {
+public class NegativeTest {
   MouseMotionFactory factory;
   MockMouse mouse;
 
   @Before
   public void setup() {
     factory = new MouseMotionFactory();
-    factory.setNature(new ScreenAdjustedNature(new Dimension(100, 100), new Point(50, 50)));
+    factory.setNature(new ScreenAdjustedNature(new Dimension(1800, 1500), new Point(-1000, -1000)));
     ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
-    mouse = new MockMouse(60, 60);
+    mouse = new MockMouse(100, 100);
     factory.setSystemCalls(new MockSystemCalls(mouse, 800, 500));
     factory.setNoiseProvider(new MockNoiseProvider());
     factory.setDeviationProvider(new MockDeviationProvider());
@@ -36,30 +36,14 @@ public class ScreenAdjustedNatureTest {
 
   @Test
   public void testOffsetAppliesToMouseMovement() throws InterruptedException {
-    factory.move(50, 50);
+    factory.move(500, 100);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(60, 60), moves.get(0));
-    Assert.assertEquals(new Point(100, 100), moves.get(moves.size() - 1));
-    Point lastPos = new Point(0, 0);
-    for (Point p : moves) {
-      Assert.assertTrue(lastPos.x +  " vs " + p.x, lastPos.x < p.x);
-      Assert.assertTrue(lastPos.y +  " vs " + p.y,lastPos.y < p.y);
-      lastPos = p;
-    }
+    Assert.assertEquals(new Point(100, 100), moves.get(0));
+    Assert.assertEquals(new Point(-500, -900), moves.get(moves.size() - 1));
+    System.out.println(moves);
   }
 
-  @Test
-  public void testDimensionsLimitScreenOnLargeSide() throws InterruptedException {
-    // Arbitrary large movement attempt: (60, 60) -> (1060, 1060)
-    factory.move(1000, 1000);
-
-    ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(60, 60), moves.get(0));
-    // Expect the screen size to be only 100x100px, so it gets capped on 150, 150.
-    // But NaturalMouseMotion allows to move to screen length - 1, so it's [149, 149]
-    Assert.assertEquals(new Point(149, 149), moves.get(moves.size() - 1));
-  }
 
   @Test
   public void testOffsetLimitScreenOnSmallSide() throws InterruptedException {
@@ -67,11 +51,8 @@ public class ScreenAdjustedNatureTest {
     factory.move(-1, -1);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(60, 60), moves.get(0));
-    // Expect the offset to limit the mouse movement to 50, 50
-    Assert.assertEquals(new Point(50, 50), moves.get(moves.size() - 1));
+    Assert.assertEquals(new Point(100, 100), moves.get(0));
+    // Expect the offset to limit the mouse movement to -1000, -1000
+    Assert.assertEquals(new Point(-1000, -1000), moves.get(moves.size() - 1));
   }
-
-
-
 }

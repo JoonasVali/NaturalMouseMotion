@@ -1,4 +1,4 @@
-package com.github.joonavali.naturalmouse;
+package com.github.joonavali.naturalmouse.screenadjustednature;
 
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.support.DefaultMouseInfoAccessor;
