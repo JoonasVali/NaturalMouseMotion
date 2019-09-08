@@ -16,14 +16,14 @@ import org.junit.Test;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class NegativeTest {
+public class ExtendedScreenTest {
   MouseMotionFactory factory;
   MockMouse mouse;
 
   @Before
   public void setup() {
     factory = new MouseMotionFactory();
-    factory.setNature(new ScreenAdjustedNature(new Dimension(1800, 1500), new Point(-1000, -1000)));
+    factory.setNature(new ScreenAdjustedNature(new Dimension(1800, 1500), new Point(0, 0)));
     ((DefaultOvershootManager)factory.getOvershootManager()).setOvershoots(0);
     mouse = new MockMouse(100, 100);
     factory.setSystemCalls(new MockSystemCalls(mouse, 800, 500));
@@ -35,23 +35,11 @@ public class NegativeTest {
   }
 
   @Test
-  public void testOffsetAppliesToMouseMovement() throws InterruptedException {
-    factory.move(500, 100);
+  public void testScreenSizeIsExtended() throws InterruptedException {
+    factory.move(1800, 1500);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
     Assert.assertEquals(new Point(100, 100), moves.get(0));
-    Assert.assertEquals(new Point(-500, -900), moves.get(moves.size() - 1));
-  }
-
-
-  @Test
-  public void testOffsetLimitScreenOnSmallSide() throws InterruptedException {
-    // Try to move out of the specified screen
-    factory.move(-1, -1);
-
-    ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(100, 100), moves.get(0));
-    // Expect the offset to limit the mouse movement to -1000, -1000
-    Assert.assertEquals(new Point(-1000, -1000), moves.get(moves.size() - 1));
+    Assert.assertEquals(new Point(1799, 1499), moves.get(moves.size() - 1));
   }
 }
