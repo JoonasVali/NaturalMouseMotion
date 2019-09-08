@@ -8,6 +8,7 @@ import com.github.joonasvali.naturalmouse.support.DefaultOvershootManager;
 import com.github.joonasvali.naturalmouse.support.DefaultSpeedManager;
 import com.github.joonasvali.naturalmouse.support.DoublePoint;
 import com.github.joonasvali.naturalmouse.support.Flow;
+import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
 import com.github.joonasvali.naturalmouse.support.SinusoidalDeviationProvider;
 
 import java.util.ArrayList;
@@ -15,14 +16,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FactoryTemplates {
+  /**
+   * <h1>Stereotypical granny using a computer with non-optical mouse from the 90s.</h1>
+   * Low speed, variating flow, lots of noise in movement.
+   *
+   * @return the factory
+   */
+  public static MouseMotionFactory createGrannyMotionFactory() {
+    return createGrannyMotionFactory(new DefaultMouseMotionNature());
+  }
 
   /**
    * <h1>Stereotypical granny using a computer with non-optical mouse from the 90s.</h1>
    * Low speed, variating flow, lots of noise in movement.
+   * @param nature the nature for the template to be configured on
    * @return the factory
    */
-  public static MouseMotionFactory createGrannyMotionFactory() {
-    MouseMotionFactory factory = new MouseMotionFactory();
+  public static MouseMotionFactory createGrannyMotionFactory(MouseMotionNature nature) {
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
     List<Flow> flows = new ArrayList<>();
     flows.add(new Flow(FlowTemplates.jaggedFlow()));
     flows.add(new Flow(FlowTemplates.random()));
@@ -50,14 +61,29 @@ public class FactoryTemplates {
   /**
    * <h1>Robotic fluent movement.</h1>
    * Custom speed, constant movement, no mistakes, no overshoots.
+   *
    * @param motionTimeMsPer100Pixels approximate time a movement takes per 100 pixels of travelling
    * @return the factory
    */
   public static MouseMotionFactory createDemoRobotMotionFactory(long motionTimeMsPer100Pixels) {
-    MouseMotionFactory factory = new MouseMotionFactory();
+    return createDemoRobotMotionFactory(new DefaultMouseMotionNature(), motionTimeMsPer100Pixels);
+  }
+
+  /**
+   * <h1>Robotic fluent movement.</h1>
+   * Custom speed, constant movement, no mistakes, no overshoots.
+   *
+   * @param nature the nature for the template to be configured on
+   * @param motionTimeMsPer100Pixels approximate time a movement takes per 100 pixels of travelling
+   * @return the factory
+   */
+  public static MouseMotionFactory createDemoRobotMotionFactory(
+      MouseMotionNature nature, long motionTimeMsPer100Pixels
+  ) {
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
     final Flow flow = new Flow(FlowTemplates.constantSpeed());
     double timePerPixel = motionTimeMsPer100Pixels / 100d;
-    SpeedManager manager = distance -> new Pair<>(flow, (long)(timePerPixel * distance));
+    SpeedManager manager = distance -> new Pair<>(flow, (long) (timePerPixel * distance));
     factory.setDeviationProvider((totalDistanceInPixels, completionFraction) -> DoublePoint.ZERO);
     factory.setNoiseProvider(((random, xStepSize, yStepSize) -> DoublePoint.ZERO));
 
@@ -71,10 +97,21 @@ public class FactoryTemplates {
   /**
    * <h1>Gamer with fast reflexes and quick mouse movements.</h1>
    * Quick movement, low noise, some deviation, lots of overshoots.
+   *
    * @return the factory
    */
   public static MouseMotionFactory createFastGamerMotionFactory() {
-    MouseMotionFactory factory = new MouseMotionFactory();
+    return createFastGamerMotionFactory(new DefaultMouseMotionNature());
+  }
+
+  /**
+   * <h1>Gamer with fast reflexes and quick mouse movements.</h1>
+   * Quick movement, low noise, some deviation, lots of overshoots.
+   * @param nature the nature for the template to be configured on
+   * @return the factory
+   */
+  public static MouseMotionFactory createFastGamerMotionFactory(MouseMotionNature nature) {
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
     List<Flow> flows = new ArrayList<>(Arrays.asList(
         new Flow(FlowTemplates.variatingFlow()),
         new Flow(FlowTemplates.slowStartupFlow()),
@@ -93,14 +130,24 @@ public class FactoryTemplates {
     factory.setSpeedManager(manager);
     return factory;
   }
-
   /**
    * <h1>Standard computer user with average speed and movement mistakes</h1>
    * medium noise, medium speed, medium noise and deviation.
+   *
    * @return the factory
    */
   public static MouseMotionFactory createAverageComputerUserMotionFactory() {
-    MouseMotionFactory factory = new MouseMotionFactory();
+    return createAverageComputerUserMotionFactory(new DefaultMouseMotionNature());
+  }
+  /**
+   * <h1>Standard computer user with average speed and movement mistakes</h1>
+   * medium noise, medium speed, medium noise and deviation.
+   *
+   * @param nature the nature for the template to be configured on
+   * @return the factory
+   */
+  public static MouseMotionFactory createAverageComputerUserMotionFactory(MouseMotionNature nature) {
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
     List<Flow> flows = new ArrayList<>(Arrays.asList(
         new Flow(FlowTemplates.constantSpeed()),
         new Flow(FlowTemplates.variatingFlow()),
