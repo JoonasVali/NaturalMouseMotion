@@ -25,6 +25,7 @@ public class DefaultSpeedManager implements SpeedManager {
         new Flow(FlowTemplates.interruptedFlow2()),
         new Flow(FlowTemplates.slowStartupFlow()),
         new Flow(FlowTemplates.slowStartup2Flow()),
+        new Flow(FlowTemplates.adjustingFlow()),
         new Flow(FlowTemplates.jaggedFlow()),
         new Flow(FlowTemplates.stoppingFlow())
     ));

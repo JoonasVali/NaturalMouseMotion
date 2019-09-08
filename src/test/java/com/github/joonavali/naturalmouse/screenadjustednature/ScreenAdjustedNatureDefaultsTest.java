@@ -39,6 +39,7 @@ public class ScreenAdjustedNatureDefaultsTest {
   public void setup() throws Exception {
     mouse = new MockMouse(60, 60);
     DefaultSystemCalls mockSystemCalls = new MockSystemCalls(mouse, 800, 500);
+
     whenNew(DefaultSystemCalls.class).withAnyArguments().thenReturn(mockSystemCalls);
     whenNew(DefaultMouseInfoAccessor.class).withAnyArguments().thenReturn(mouse);
 

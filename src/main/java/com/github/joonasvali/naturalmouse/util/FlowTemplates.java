@@ -75,6 +75,14 @@ public class FlowTemplates {
     };
   }
 
+  public static double[] adjustingFlow() {
+    return new double[] {
+        1, 1, 1, 3, 8, 7, 2, 2, 4, 8, 6, 3, 7, 13, 18, 19, 24, 35, 26, 14, 31,
+        43, 49, 55, 61, 67, 61, 50, 43, 37, 30, 16, 5, 4, 4, 3, 3, 3, 4, 4, 3,
+        2, 2, 3, 10, 14, 10, 7, 5, 5
+    };
+  }
+
   public static double[] random() {
     double[] result = new double[100];
     for (int i = 0; i < result.length; i++) {
