@@ -1,3 +1,9 @@
+## v 2.0.2
+Feature: existing FactoryTemplates now allow passing MouseMotionNature as a parameter.
+Fix: Fixed issue with FlowUtil that caused modifier to be applied too early for some inputs. (Did not affect runtime, separate tool.)
+Change: Added 'adjustingFlow' Flow template and improved the factory templates accordingly.
+Change: constantFlow was removed from averageComputerUser template.
+
 ## v 2.0.1
 Feature: When mouse somehow is not ending up on the correct pixel, an adjustment is made and warning logged, so the library is still useful even when the setup is not working correctly or JDK bug is run into.
 Feature: Added SystemDiagnosis class, which can be used to validate setting and getting cursor position on user's device. 
