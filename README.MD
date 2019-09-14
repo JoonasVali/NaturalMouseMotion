@@ -23,7 +23,7 @@ https://www.youtube.com/watch?v=CuG9LvQ0fdQ
 <dependency>
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
-  <version>2.0.1</version>
+  <version>2.0.2</version>
 </dependency>
 ```
 
