@@ -46,7 +46,7 @@ so a quick access can be found by calling `MouseMotionFactory.getDefault().move(
 
 ## Precooked templates ##
 
-NaturalMouseMotion includes FactoryTemplates class which contains a variety of behaviors for your simulations.
+NaturalMouseMotion includes [FactoryTemplates](https://github.com/JoonasVali/NaturalMouseMotion/blob/master/src/main/java/com/github/joonasvali/naturalmouse/util/FactoryTemplates.java) class which contains a variety of behaviors for your simulations.
 
   * **GrannyMotionFactory** is a slow and clumsy mouse movement with a lot of noise.
   * **FastGamerMotionFactory** is a fast and persistent movement with low noise, simulating behavior of someone who knows where the click should land, like a professional gamer.
@@ -74,7 +74,7 @@ as a first thing in the factory, before any other settings are touched (as the s
 
 ## How do I get a mouse that works on multiple screens?
 
-You use the previously mentioned ScreenAdjustedNature and configure it to extend the main screen area to the side which the other screen resides. 
+You use the previously mentioned `ScreenAdjustedNature` and configure it to extend the main screen area to the side which the other screen resides.
 
 Extending main screen to left
 ```java
