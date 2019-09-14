@@ -19,7 +19,7 @@ https://www.youtube.com/watch?v=CuG9LvQ0fdQ
 
 ## Maven: ##
 
-```
+```xml
 <dependency>
   <groupId>com.github.joonasvali.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
@@ -58,7 +58,7 @@ NaturalMouseMotion includes FactoryTemplates class which contains a variety of b
 Sometimes you might need to simulate the mouse movement somewhere else than in the real screen or keep the mouse in a smaller area in the screen. 
 In this case it is possible to perform coordinate translation by limiting the screen to certain area only. The following code is restricting the 
 movement to **500*500** box at coordinates **(50,50)** on screen.
-```
+```java
     MouseMotionFactory factory = new MouseMotionFactory();
     Dimension screenSize = new Dimension(500, 500);
     Point offset = new Point(50, 50);
@@ -77,7 +77,7 @@ as a first thing in the factory, before any other settings are touched (as the s
 You use the previously mentioned ScreenAdjustedNature and configure it to extend the main screen area to the side which the other screen resides. 
 
 Extending main screen to left
-```
+```java
     // How to extend screen to left. This means your main monitor is in the right and additional screen is left
     // of the main screen.
     Dimension screenOnTheLeft = new Dimension(2000, 1080);
@@ -100,7 +100,7 @@ Extending main screen to left
 ```
 
 Extending main screen to right
-```
+```java
     // How to extend screen to right. This means your main monitor is in the left and additional screen is right
     // of the main screen.
     Dimension screenOnTheRight = new Dimension(2000, 1080);
