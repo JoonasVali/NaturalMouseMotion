@@ -72,6 +72,56 @@ Attempting to move the mouse outside the **500x500** box with larger values is g
 NB: By setting the nature in the factory all previously set nature settings are lost because the instance is reassigned, which means setting nature should be done 
 as a first thing in the factory, before any other settings are touched (as the settings are stored in the nature).
 
+## How do I get a mouse that works on multiple screens?
+
+You use the previously mentioned ScreenAdjustedNature and configure it to extend the main screen area to the side which the other screen resides. 
+
+Extending main screen to left
+```
+    // How to extend screen to left. This means your main monitor is in the right and additional screen is left
+    // of the main screen.
+    Dimension screenOnTheLeft = new Dimension(2000, 1080);
+    Dimension mainScreen = new Dimension(2000, 1080);
+
+    ScreenAdjustedNature nature = new ScreenAdjustedNature(
+        // The new dimension of the screen is a sum of both screen dimensions:
+        new Dimension(screenOnTheLeft.width + mainScreen.width, bothScreenHeight),
+        // Adjust the (0, 0) point to be at the left upper corner of the left screen:
+        new Point(-screenOnTheLeft.width, 0)
+    );
+
+    // Creates a factory with the screen adjusted nature.
+    MouseMotionFactory factory = FactoryTemplates.createAverageComputerUserMotionFactory(nature);
+
+    // Move mouse to the left upper corner of the left screen
+    factory.move(0, 0);
+    // Move mouse to the left upper corner of the right screen
+    factory.move(screenOnTheLeft.width + 1, 0);
+```
+
+Extending main screen to right
+```
+    // How to extend screen to right. This means your main monitor is in the left and additional screen is right
+    // of the main screen.
+    Dimension screenOnTheRight = new Dimension(2000, 1080);
+    Dimension mainScreen = new Dimension(2000, 1080);
+
+    ScreenAdjustedNature nature = new ScreenAdjustedNature(
+        // The new dimension of the screen is a sum of both screen dimensions:
+        new Dimension(screenOnTheRight.width + mainScreen.width, bothScreenHeight),
+        // Adjust the (0, 0) point to be at the left upper corner of the main screen:
+        new Point(0, 0)
+    );
+
+    // Creates a factory with the screen adjusted nature.
+    MouseMotionFactory factory = FactoryTemplates.createAverageComputerUserMotionFactory(nature);
+
+    // Move mouse to the left upper corner of the main (left) screen
+    factory.move(0, 0);
+    // Move mouse to the left upper corner of the right screen
+    factory.move(mainScreen.width + 1, 0);
+```
+
 ## What if I want to move something else than a mouse on something else than a screen?
 
 In this case you need to provide your own `SystemCalls` and `MouseInfoAccessor` to the factory. 
