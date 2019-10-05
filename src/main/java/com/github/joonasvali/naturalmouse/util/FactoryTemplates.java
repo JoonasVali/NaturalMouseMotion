@@ -92,6 +92,7 @@ public class FactoryTemplates {
     DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(0);
 
+    factory.setOvershootManager(overshootManager);
     factory.setSpeedManager(manager);
     return factory;
   }
