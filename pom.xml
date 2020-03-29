@@ -4,20 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.joonasvali.naturalmouse</groupId>
+  <groupId>com.github.kbman99.naturalmouse</groupId>
   <artifactId>naturalmouse</artifactId>
-  <version>2.0.3-SNAPSHOT</version>
+  <version>2.0.3</version>
   <name>Natural Mouse Motion</name>
-  <url>https://github.com/JoonasVali/NaturalMouseMotion</url>
+  <url>https://github.com/kbman99/NaturalMouseMotion</url>
   <description>This library provides a way to move cursor to specified coordinates on screen reliably,
     while being randomly arced to look like real hand moved it there by using a mouse.
   </description>
 
   <developers>
     <developer>
-      <name>Joonas Vali</name>
-      <email>joonas.wali@gmail.com</email>
-      <url>https://github.com/JoonasVali</url>
+      <name>Kyle Bowman</name>
+      <email>kylebowman99@gmail.com</email>
+      <url>https://github.com/Kbman99</url>
     </developer>
   </developers>
 
@@ -30,19 +30,15 @@
   </licenses>
 
   <properties>
-    <java.version.source>1.8</java.version.source>
-    <java.version.target>1.8</java.version.target>
-    <maven.compiler.source>${java.version.source}</maven.compiler.source>
-    <maven.compiler.target>${java.version.target}</maven.compiler.target>
+    <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <powermock.version>2.0.2</powermock.version>
   </properties>
 
   <scm>
-    <url>https://github.com/JoonasVali/NaturalMouseMotion</url>
-    <connection>scm:git:git@github.com:JoonasVali/NaturalMouseMotion.git</connection>
-    <developerConnection>scm:git:git@github.com:JoonasVali/NaturalMouseMotion.git</developerConnection>
+    <url>https://github.com/Kbman99/NaturalMouseMotion</url>
+    <connection>scm:git:git@github.com:Kbman99/NaturalMouseMotion.git</connection>
+    <developerConnection>scm:git:git@github.com:Kbman99/NaturalMouseMotion.git</developerConnection>
   </scm>
 
   <dependencies>
@@ -61,13 +57,13 @@
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
-      <version>${powermock.version}</version>
+      <version>1.7.4</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
-      <artifactId>powermock-api-mockito2</artifactId>
-      <version>${powermock.version}</version>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>1.7.4</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -79,8 +75,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <source>${java.version.source}</source>
-          <target>${java.version.target}</target>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
         </configuration>
       </plugin>
       <plugin>
@@ -91,7 +87,7 @@
           <archive>
             <index>true</index>
             <manifestEntries>
-              <Automatic-Module-Name>com.github.joonasvali.naturalmouse</Automatic-Module-Name>
+              <Automatic-Module-Name>com.github.kbman99.naturalmouse</Automatic-Module-Name>
             </manifestEntries>
           </archive>
         </configuration>
