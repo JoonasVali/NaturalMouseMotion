@@ -27,7 +27,7 @@ public class FactoryTemplates {
    * @param nature the nature for the template to be configured on
    * @return the factory
    */
-  public static MouseMotionFactory createGrannyMotionFactory(final MouseMotionNature nature) {
+  public static MouseMotionFactory createGrannyMotionFactory(MouseMotionNature nature) {
     final MouseMotionFactory factory = new MouseMotionFactory(nature);
     final List<Flow> flows = new ArrayList<>(
         Arrays.asList(new Flow(FlowTemplates.jaggedFlow()), new Flow(FlowTemplates.random()),
@@ -43,7 +43,7 @@ public class FactoryTemplates {
     overshootManager.setMinDistanceForOvershoots(3);
     overshootManager.setMinOvershootMovementMs(400);
     overshootManager
-        .setOvershootRandomModifierDivider(DefaultOvershootManager.OVERSHOOT_RANDOM_MODIFIER_DIVIDER / 2);
+        .setOvershootRandomModifierDivider(DefaultOvershootManager.OVERSHOOT_RANDOM_MODIFIER_DIVIDER / 2f);
     overshootManager.setOvershootSpeedupDivider(DefaultOvershootManager.OVERSHOOT_SPEEDUP_DIVIDER * 2);
 
     factory.getNature().setTimeToStepsDivider(DefaultMouseMotionNature.TIME_TO_STEPS_DIVIDER - 2);
@@ -60,7 +60,7 @@ public class FactoryTemplates {
    *                                 pixels of travelling
    * @return the factory
    */
-  public static MouseMotionFactory createDemoRobotMotionFactory(final long motionTimeMsPer100Pixels) {
+  public static MouseMotionFactory createDemoRobotMotionFactory(long motionTimeMsPer100Pixels) {
     return createDemoRobotMotionFactory(new DefaultMouseMotionNature(), motionTimeMsPer100Pixels);
   }
 
@@ -74,8 +74,8 @@ public class FactoryTemplates {
    *                                 pixels of travelling
    * @return the factory
    */
-  public static MouseMotionFactory createDemoRobotMotionFactory(final MouseMotionNature nature,
-                                                                final long motionTimeMsPer100Pixels) {
+  public static MouseMotionFactory createDemoRobotMotionFactory(MouseMotionNature nature,
+                                                                long motionTimeMsPer100Pixels) {
     final MouseMotionFactory factory = new MouseMotionFactory(nature);
     final Flow flow = new Flow(FlowTemplates.constantSpeed());
     final double timePerPixel = motionTimeMsPer100Pixels / 100d;
@@ -107,7 +107,7 @@ public class FactoryTemplates {
    * @param nature the nature for the template to be configured on
    * @return the factory
    */
-  public static MouseMotionFactory createFastGamerMotionFactory(final MouseMotionNature nature) {
+  public static MouseMotionFactory createFastGamerMotionFactory(MouseMotionNature nature) {
     final MouseMotionFactory factory = new MouseMotionFactory(nature);
     final List<Flow> flows = new ArrayList<>(Arrays.asList(new Flow(FlowTemplates.variatingFlow()),
         new Flow(FlowTemplates.slowStartupFlow()), new Flow(FlowTemplates.slowStartup2Flow()),
@@ -143,7 +143,7 @@ public class FactoryTemplates {
    * @param systemCalls System call provider
    * @return the factory
    */
-  public static MouseMotionFactory createAverageComputerUserMotionFactory(final SystemCalls systemCalls) {
+  public static MouseMotionFactory createAverageComputerUserMotionFactory(SystemCalls systemCalls) {
     return createAverageComputerUserMotionFactory(new DefaultMouseMotionNature(systemCalls));
   }
 
@@ -154,13 +154,20 @@ public class FactoryTemplates {
    * @param nature the nature for the template to be configured on
    * @return the factory
    */
-  public static MouseMotionFactory createAverageComputerUserMotionFactory(final MouseMotionNature nature) {
+  public static MouseMotionFactory createAverageComputerUserMotionFactory(MouseMotionNature nature) {
     final MouseMotionFactory factory = new MouseMotionFactory(nature);
     final List<Flow> flows = new ArrayList<>(
-        Arrays.asList(new Flow(FlowTemplates.variatingFlow()), new Flow(FlowTemplates.interruptedFlow()),
-            new Flow(FlowTemplates.interruptedFlow2()), new Flow(FlowTemplates.slowStartupFlow()),
-            new Flow(FlowTemplates.slowStartup2Flow()), new Flow(FlowTemplates.adjustingFlow()),
-            new Flow(FlowTemplates.jaggedFlow()), new Flow(FlowTemplates.stoppingFlow())));
+        Arrays.asList(
+        		new Flow(FlowTemplates.variatingFlow()),
+						new Flow(FlowTemplates.interruptedFlow()),
+            new Flow(FlowTemplates.interruptedFlow2()),
+						new Flow(FlowTemplates.slowStartupFlow()),
+            new Flow(FlowTemplates.slowStartup2Flow()),
+						new Flow(FlowTemplates.adjustingFlow()),
+            new Flow(FlowTemplates.jaggedFlow()),
+						new Flow(FlowTemplates.stoppingFlow())
+				)
+		);
     final DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(
         new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));

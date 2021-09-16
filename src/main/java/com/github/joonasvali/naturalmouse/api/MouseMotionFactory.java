@@ -14,7 +14,7 @@ public class MouseMotionFactory {
   private MouseMotionNature nature;
   private Random random = new Random();
 
-  public MouseMotionFactory(final MouseMotionNature nature) {
+  public MouseMotionFactory(MouseMotionNature nature) {
     this.nature = nature;
   }
 
@@ -31,7 +31,7 @@ public class MouseMotionFactory {
    * (Mouse will be moved from its current position, not from the position
    * where mouse was during building.)
    */
-  public MouseMotion build(final int xDest, final int yDest) {
+  public MouseMotion build(int xDest, int yDest) {
     return new MouseMotion(nature, random, xDest, yDest);
   }
 
@@ -42,7 +42,7 @@ public class MouseMotionFactory {
    * @param yDest the end position y-coordinate for the mouse
    * @throws InterruptedException if something interrupts the thread.
    */
-  public void move(final int xDest, final int yDest) throws InterruptedException {
+  public void move(int xDest, int yDest) throws InterruptedException {
     build(xDest, yDest).move();
   }
 
@@ -72,7 +72,7 @@ public class MouseMotionFactory {
    *
    * @param systemCalls the systemcalls
    */
-  public void setSystemCalls(final SystemCalls systemCalls) {
+  public void setSystemCalls(SystemCalls systemCalls) {
     nature.setSystemCalls(systemCalls);
   }
 
@@ -90,7 +90,7 @@ public class MouseMotionFactory {
    *
    * @param deviationProvider the deviation provider
    */
-  public void setDeviationProvider(final DeviationProvider deviationProvider) {
+  public void setDeviationProvider(DeviationProvider deviationProvider) {
     nature.setDeviationProvider(deviationProvider);
   }
 
@@ -108,7 +108,7 @@ public class MouseMotionFactory {
    *
    * @param noiseProvider the noise provider
    */
-  public void setNoiseProvider(final NoiseProvider noiseProvider) {
+  public void setNoiseProvider(NoiseProvider noiseProvider) {
     nature.setNoiseProvider(noiseProvider);
   }
 
@@ -126,7 +126,7 @@ public class MouseMotionFactory {
    *
    * @param random the random
    */
-  public void setRandom(final Random random) {
+  public void setRandom(Random random) {
     this.random = random;
   }
 
@@ -144,7 +144,7 @@ public class MouseMotionFactory {
    *
    * @param mouseInfo the mouseInfo
    */
-  public void setMouseInfo(final MouseInfoAccessor mouseInfo) {
+  public void setMouseInfo(MouseInfoAccessor mouseInfo) {
     nature.setMouseInfo(mouseInfo);
   }
 
@@ -162,7 +162,7 @@ public class MouseMotionFactory {
    *
    * @param speedManager the manager
    */
-  public void setSpeedManager(final SpeedManager speedManager) {
+  public void setSpeedManager(SpeedManager speedManager) {
     nature.setSpeedManager(speedManager);
   }
 
@@ -180,7 +180,7 @@ public class MouseMotionFactory {
    *
    * @param nature the new nature
    */
-  public void setNature(final MouseMotionNature nature) {
+  public void setNature(MouseMotionNature nature) {
     this.nature = nature;
   }
 
@@ -189,7 +189,7 @@ public class MouseMotionFactory {
    *
    * @param manager the manager
    */
-  public void setOvershootManager(final OvershootManager manager) {
+  public void setOvershootManager(OvershootManager manager) {
     nature.setOvershootManager(manager);
   }
 

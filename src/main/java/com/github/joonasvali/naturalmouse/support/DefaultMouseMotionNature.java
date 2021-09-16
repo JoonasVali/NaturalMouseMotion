@@ -16,7 +16,7 @@ public class DefaultMouseMotionNature extends MouseMotionNature {
   public static final int REACTION_TIME_BASE_MS = 20;
   public static final int REACTION_TIME_VARIATION_MS = 120;
 
-  public DefaultMouseMotionNature(final SystemCalls systemCalls) {
+  public DefaultMouseMotionNature(SystemCalls systemCalls) {
     setSystemCalls(systemCalls);
     setDeviationProvider(new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER));
     setNoiseProvider(new DefaultNoiseProvider(DEFAULT_NOISINESS_DIVIDER));
@@ -32,7 +32,6 @@ public class DefaultMouseMotionNature extends MouseMotionNature {
 
   public DefaultMouseMotionNature() {
     this(new DefaultSystemCalls(getRobot()));
-
   }
 
   private static Robot getRobot() {
