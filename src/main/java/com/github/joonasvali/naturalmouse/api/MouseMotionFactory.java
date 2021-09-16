@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * is available via getDefault(), but can create new instance via constructor.
  */
 public class MouseMotionFactory {
-  private static AtomicReference<MouseMotionFactory> defaultFactory = new AtomicReference<>();
+  private static final AtomicReference<MouseMotionFactory> defaultFactory = new AtomicReference<>();
   private MouseMotionNature nature;
   private Random random = new Random();
 

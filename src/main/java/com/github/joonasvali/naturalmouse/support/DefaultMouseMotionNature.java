@@ -1,5 +1,6 @@
 package com.github.joonasvali.naturalmouse.support;
 
+import com.github.joonasvali.naturalmouse.api.MouseInfoAccessor;
 import com.github.joonasvali.naturalmouse.api.SystemCalls;
 
 import java.awt.*;
@@ -17,6 +18,16 @@ public class DefaultMouseMotionNature extends MouseMotionNature {
   public static final int REACTION_TIME_VARIATION_MS = 120;
 
   public DefaultMouseMotionNature(SystemCalls systemCalls) {
+    this(systemCalls, new DefaultMouseInfoAccessor());
+  }
+
+  /**
+   * Create a default mouse motion nature with custom system calls and mouse info.
+   * Use this when running somewhere where java Robot does not work.
+   * @param systemCalls custom system calls to be used in the nature
+   * @param mouseInfoAccessor custom mouse info accessor to be used in the nature
+   */
+  public DefaultMouseMotionNature(SystemCalls systemCalls, MouseInfoAccessor mouseInfoAccessor) {
     setSystemCalls(systemCalls);
     setDeviationProvider(new SinusoidalDeviationProvider(DEFAULT_SLOPE_DIVIDER));
     setNoiseProvider(new DefaultNoiseProvider(DEFAULT_NOISINESS_DIVIDER));
@@ -24,7 +35,7 @@ public class DefaultMouseMotionNature extends MouseMotionNature {
     setOvershootManager(new DefaultOvershootManager(new Random()));
     setEffectFadeSteps(EFFECT_FADE_STEPS);
     setMinSteps(MIN_STEPS);
-    setMouseInfo(new DefaultMouseInfoAccessor());
+    setMouseInfo(mouseInfoAccessor);
     setReactionTimeBaseMs(REACTION_TIME_BASE_MS);
     setReactionTimeVariationMs(REACTION_TIME_VARIATION_MS);
     setTimeToStepsDivider(TIME_TO_STEPS_DIVIDER);

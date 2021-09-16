@@ -2,7 +2,6 @@ package com.github.joonasvali.naturalmouse.util;
 
 import com.github.joonasvali.naturalmouse.api.MouseMotionFactory;
 import com.github.joonasvali.naturalmouse.api.SpeedManager;
-import com.github.joonasvali.naturalmouse.api.SystemCalls;
 import com.github.joonasvali.naturalmouse.support.*;
 
 import java.util.ArrayList;
@@ -146,17 +145,6 @@ public class FactoryTemplates {
    */
   public static MouseMotionFactory createAverageComputerUserMotionFactory() {
     return createAverageComputerUserMotionFactory(new DefaultMouseMotionNature());
-  }
-
-  /**
-   * <h1>Standard computer user with average speed and movement mistakes</h1>
-   * medium noise, medium speed, medium noise and deviation.
-   *
-   * @param systemCalls System call provider
-   * @return the factory
-   */
-  public static MouseMotionFactory createAverageComputerUserMotionFactory(SystemCalls systemCalls) {
-    return createAverageComputerUserMotionFactory(new DefaultMouseMotionNature(systemCalls));
   }
 
   /**
