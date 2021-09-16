@@ -28,16 +28,14 @@ public class FactoryTemplates {
    */
   public static MouseMotionFactory createGrannyMotionFactory(MouseMotionNature nature) {
     MouseMotionFactory factory = new MouseMotionFactory(nature);
-    List<Flow> flows = new ArrayList<>(
-        Arrays.asList(
-            new Flow(FlowTemplates.jaggedFlow()),
-            new Flow(FlowTemplates.random()),
-            new Flow(FlowTemplates.interruptedFlow()),
-            new Flow(FlowTemplates.interruptedFlow2()),
-            new Flow(FlowTemplates.adjustingFlow()),
-            new Flow(FlowTemplates.stoppingFlow())
-        )
-    );
+    List<Flow> flows = new ArrayList<>(Arrays.asList(
+        new Flow(FlowTemplates.jaggedFlow()),
+        new Flow(FlowTemplates.random()),
+        new Flow(FlowTemplates.interruptedFlow()),
+        new Flow(FlowTemplates.interruptedFlow2()),
+        new Flow(FlowTemplates.adjustingFlow()),
+        new Flow(FlowTemplates.stoppingFlow())
+    ));
     DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(new SinusoidalDeviationProvider(9));
     factory.setNoiseProvider(new DefaultNoiseProvider(1.6));
@@ -114,15 +112,13 @@ public class FactoryTemplates {
    */
   public static MouseMotionFactory createFastGamerMotionFactory(MouseMotionNature nature) {
     MouseMotionFactory factory = new MouseMotionFactory(nature);
-    List<Flow> flows = new ArrayList<>(
-        Arrays.asList(
-            new Flow(FlowTemplates.variatingFlow()),
-            new Flow(FlowTemplates.slowStartupFlow()),
-            new Flow(FlowTemplates.slowStartup2Flow()),
-            new Flow(FlowTemplates.adjustingFlow()),
-            new Flow(FlowTemplates.jaggedFlow())
-        )
-    );
+    List<Flow> flows = new ArrayList<>(Arrays.asList(
+        new Flow(FlowTemplates.variatingFlow()),
+        new Flow(FlowTemplates.slowStartupFlow()),
+        new Flow(FlowTemplates.slowStartup2Flow()),
+        new Flow(FlowTemplates.adjustingFlow()),
+        new Flow(FlowTemplates.jaggedFlow())
+    ));
     DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(
         new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));
@@ -156,18 +152,16 @@ public class FactoryTemplates {
    */
   public static MouseMotionFactory createAverageComputerUserMotionFactory(MouseMotionNature nature) {
     MouseMotionFactory factory = new MouseMotionFactory(nature);
-    List<Flow> flows = new ArrayList<>(
-        Arrays.asList(
-            new Flow(FlowTemplates.variatingFlow()),
-            new Flow(FlowTemplates.interruptedFlow()),
-            new Flow(FlowTemplates.interruptedFlow2()),
-            new Flow(FlowTemplates.slowStartupFlow()),
-            new Flow(FlowTemplates.slowStartup2Flow()),
-            new Flow(FlowTemplates.adjustingFlow()),
-            new Flow(FlowTemplates.jaggedFlow()),
-            new Flow(FlowTemplates.stoppingFlow())
-        )
-    );
+    List<Flow> flows = new ArrayList<>(Arrays.asList(
+        new Flow(FlowTemplates.variatingFlow()),
+        new Flow(FlowTemplates.interruptedFlow()),
+        new Flow(FlowTemplates.interruptedFlow2()),
+        new Flow(FlowTemplates.slowStartupFlow()),
+        new Flow(FlowTemplates.slowStartup2Flow()),
+        new Flow(FlowTemplates.adjustingFlow()),
+        new Flow(FlowTemplates.jaggedFlow()),
+        new Flow(FlowTemplates.stoppingFlow())
+    ));
     DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(
         new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));
