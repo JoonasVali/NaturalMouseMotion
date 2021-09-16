@@ -28,17 +28,23 @@ public class FactoryTemplates {
    * @return the factory
    */
   public static MouseMotionFactory createGrannyMotionFactory(MouseMotionNature nature) {
-    final MouseMotionFactory factory = new MouseMotionFactory(nature);
-    final List<Flow> flows = new ArrayList<>(
-        Arrays.asList(new Flow(FlowTemplates.jaggedFlow()), new Flow(FlowTemplates.random()),
-            new Flow(FlowTemplates.interruptedFlow()), new Flow(FlowTemplates.interruptedFlow2()),
-            new Flow(FlowTemplates.adjustingFlow()), new Flow(FlowTemplates.stoppingFlow())));
-    final DefaultSpeedManager manager = new DefaultSpeedManager(flows);
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
+    List<Flow> flows = new ArrayList<>(
+        Arrays.asList(
+            new Flow(FlowTemplates.jaggedFlow()),
+            new Flow(FlowTemplates.random()),
+            new Flow(FlowTemplates.interruptedFlow()),
+            new Flow(FlowTemplates.interruptedFlow2()),
+            new Flow(FlowTemplates.adjustingFlow()),
+            new Flow(FlowTemplates.stoppingFlow())
+        )
+    );
+    DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(new SinusoidalDeviationProvider(9));
     factory.setNoiseProvider(new DefaultNoiseProvider(1.6));
     factory.getNature().setReactionTimeBaseMs(100);
 
-    final DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(3);
     overshootManager.setMinDistanceForOvershoots(3);
     overshootManager.setMinOvershootMovementMs(400);
@@ -76,14 +82,14 @@ public class FactoryTemplates {
    */
   public static MouseMotionFactory createDemoRobotMotionFactory(MouseMotionNature nature,
                                                                 long motionTimeMsPer100Pixels) {
-    final MouseMotionFactory factory = new MouseMotionFactory(nature);
-    final Flow flow = new Flow(FlowTemplates.constantSpeed());
-    final double timePerPixel = motionTimeMsPer100Pixels / 100d;
-    final SpeedManager manager = distance -> new Pair<>(flow, (long) (timePerPixel * distance));
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
+    Flow flow = new Flow(FlowTemplates.constantSpeed());
+    double timePerPixel = motionTimeMsPer100Pixels / 100d;
+    SpeedManager manager = distance -> new Pair<>(flow, (long) (timePerPixel * distance));
     factory.setDeviationProvider((totalDistanceInPixels, completionFraction) -> DoublePoint.ZERO);
     factory.setNoiseProvider(((random, xStepSize, yStepSize) -> DoublePoint.ZERO));
 
-    final DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(0);
 
     factory.setSpeedManager(manager);
@@ -108,18 +114,24 @@ public class FactoryTemplates {
    * @return the factory
    */
   public static MouseMotionFactory createFastGamerMotionFactory(MouseMotionNature nature) {
-    final MouseMotionFactory factory = new MouseMotionFactory(nature);
-    final List<Flow> flows = new ArrayList<>(Arrays.asList(new Flow(FlowTemplates.variatingFlow()),
-        new Flow(FlowTemplates.slowStartupFlow()), new Flow(FlowTemplates.slowStartup2Flow()),
-        new Flow(FlowTemplates.adjustingFlow()), new Flow(FlowTemplates.jaggedFlow())));
-    final DefaultSpeedManager manager = new DefaultSpeedManager(flows);
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
+    List<Flow> flows = new ArrayList<>(
+        Arrays.asList(
+            new Flow(FlowTemplates.variatingFlow()),
+            new Flow(FlowTemplates.slowStartupFlow()),
+            new Flow(FlowTemplates.slowStartup2Flow()),
+            new Flow(FlowTemplates.adjustingFlow()),
+            new Flow(FlowTemplates.jaggedFlow())
+        )
+    );
+    DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(
         new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));
     factory.setNoiseProvider(new DefaultNoiseProvider(DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER));
     factory.getNature().setReactionTimeVariationMs(100);
     manager.setMouseMovementBaseTimeMs(250);
 
-    final DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(4);
 
     factory.setSpeedManager(manager);
@@ -155,27 +167,27 @@ public class FactoryTemplates {
    * @return the factory
    */
   public static MouseMotionFactory createAverageComputerUserMotionFactory(MouseMotionNature nature) {
-    final MouseMotionFactory factory = new MouseMotionFactory(nature);
-    final List<Flow> flows = new ArrayList<>(
+    MouseMotionFactory factory = new MouseMotionFactory(nature);
+    List<Flow> flows = new ArrayList<>(
         Arrays.asList(
-        		new Flow(FlowTemplates.variatingFlow()),
-						new Flow(FlowTemplates.interruptedFlow()),
+            new Flow(FlowTemplates.variatingFlow()),
+            new Flow(FlowTemplates.interruptedFlow()),
             new Flow(FlowTemplates.interruptedFlow2()),
-						new Flow(FlowTemplates.slowStartupFlow()),
+            new Flow(FlowTemplates.slowStartupFlow()),
             new Flow(FlowTemplates.slowStartup2Flow()),
-						new Flow(FlowTemplates.adjustingFlow()),
+            new Flow(FlowTemplates.adjustingFlow()),
             new Flow(FlowTemplates.jaggedFlow()),
-						new Flow(FlowTemplates.stoppingFlow())
-				)
-		);
-    final DefaultSpeedManager manager = new DefaultSpeedManager(flows);
+            new Flow(FlowTemplates.stoppingFlow())
+        )
+    );
+    DefaultSpeedManager manager = new DefaultSpeedManager(flows);
     factory.setDeviationProvider(
         new SinusoidalDeviationProvider(SinusoidalDeviationProvider.DEFAULT_SLOPE_DIVIDER));
     factory.setNoiseProvider(new DefaultNoiseProvider(DefaultNoiseProvider.DEFAULT_NOISINESS_DIVIDER));
     factory.getNature().setReactionTimeVariationMs(110);
     manager.setMouseMovementBaseTimeMs(400);
 
-    final DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
+    DefaultOvershootManager overshootManager = (DefaultOvershootManager) factory.getOvershootManager();
     overshootManager.setOvershoots(4);
 
     factory.setSpeedManager(manager);
