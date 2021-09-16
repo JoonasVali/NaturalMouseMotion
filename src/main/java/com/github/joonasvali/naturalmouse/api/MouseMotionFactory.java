@@ -4,13 +4,14 @@ import com.github.joonasvali.naturalmouse.support.DefaultMouseMotionNature;
 import com.github.joonasvali.naturalmouse.support.MouseMotionNature;
 
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * This class should be used for creating new MouseMotion-s The default instance
+ * This class should be used for creating new `MouseMotion`s. The default instance
  * is available via getDefault(), but can create new instance via constructor.
  */
 public class MouseMotionFactory {
-  private static MouseMotionFactory defaultFactory;
+  private static AtomicReference<MouseMotionFactory> defaultFactory = new AtomicReference<>();
   private MouseMotionNature nature;
   private Random random = new Random();
 
@@ -52,10 +53,10 @@ public class MouseMotionFactory {
    * @return the factory
    */
   public static MouseMotionFactory getDefault() {
-    if (defaultFactory == null) {
-      defaultFactory = new MouseMotionFactory();
+    if (defaultFactory.get() == null) {
+      defaultFactory.compareAndSet(null, new MouseMotionFactory());
     }
-    return defaultFactory;
+    return defaultFactory.get();
   }
 
   /**
