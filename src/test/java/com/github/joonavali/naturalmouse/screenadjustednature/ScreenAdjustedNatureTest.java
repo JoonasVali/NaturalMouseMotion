@@ -9,9 +9,9 @@ import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
 import com.github.joonavali.naturalmouse.testutils.MockRandom;
 import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
 import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ScreenAdjustedNatureTest {
   MouseMotionFactory factory;
   MockMouse mouse;
 
-  @Before
+  @BeforeEach
   public void setup() {
     factory = new MouseMotionFactory();
     factory.setNature(new ScreenAdjustedNature(new Dimension(100, 100), new Point(50, 50)));
@@ -39,12 +39,12 @@ public class ScreenAdjustedNatureTest {
     factory.move(50, 50);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(60, 60), moves.get(0));
-    Assert.assertEquals(new Point(100, 100), moves.get(moves.size() - 1));
+    Assertions.assertEquals(new Point(60, 60), moves.get(0));
+    Assertions.assertEquals(new Point(100, 100), moves.get(moves.size() - 1));
     Point lastPos = new Point(0, 0);
     for (Point p : moves) {
-      Assert.assertTrue(lastPos.x +  " vs " + p.x, lastPos.x < p.x);
-      Assert.assertTrue(lastPos.y +  " vs " + p.y,lastPos.y < p.y);
+      Assertions.assertTrue(lastPos.x < p.x, lastPos.x +  " vs " + p.x);
+      Assertions.assertTrue(lastPos.y < p.y, lastPos.y +  " vs " + p.y);
       lastPos = p;
     }
   }
@@ -55,10 +55,10 @@ public class ScreenAdjustedNatureTest {
     factory.move(1000, 1000);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(60, 60), moves.get(0));
+    Assertions.assertEquals(new Point(60, 60), moves.get(0));
     // Expect the screen size to be only 100x100px, so it gets capped on 150, 150.
     // But NaturalMouseMotion allows to move to screen length - 1, so it's [149, 149]
-    Assert.assertEquals(new Point(149, 149), moves.get(moves.size() - 1));
+    Assertions.assertEquals(new Point(149, 149), moves.get(moves.size() - 1));
   }
 
   @Test
@@ -67,9 +67,9 @@ public class ScreenAdjustedNatureTest {
     factory.move(-1, -1);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(60, 60), moves.get(0));
+    Assertions.assertEquals(new Point(60, 60), moves.get(0));
     // Expect the offset to limit the mouse movement to 50, 50
-    Assert.assertEquals(new Point(50, 50), moves.get(moves.size() - 1));
+    Assertions.assertEquals(new Point(50, 50), moves.get(moves.size() - 1));
   }
 
 

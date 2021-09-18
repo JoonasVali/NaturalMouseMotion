@@ -3,8 +3,8 @@ package com.github.joonavali.naturalmouse.support.mousemotion;
 import com.github.joonasvali.naturalmouse.support.DefaultOvershootManager;
 import com.github.joonasvali.naturalmouse.support.Flow;
 import com.github.joonavali.naturalmouse.testutils.MockRandom;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.Random;
@@ -16,11 +16,11 @@ public class DefaultOvershootManagerTest {
     DefaultOvershootManager manager = new DefaultOvershootManager(random);
 
     int overshoots = manager.getOvershoots(new Flow(new double[]{100}), 200, 1000);
-    Assert.assertEquals(3, overshoots);
+    Assertions.assertEquals(3, overshoots);
 
     manager.setOvershoots(10);
     overshoots = manager.getOvershoots(new Flow(new double[]{100}), 200, 1000);
-    Assert.assertEquals(10, overshoots);
+    Assertions.assertEquals(10, overshoots);
   }
 
   @Test
@@ -47,8 +47,8 @@ public class DefaultOvershootManagerTest {
       overshoot3 = manager.getOvershootAmount(1000, 500, 1000, 3);
     }
 
-    Assert.assertEquals(overshoot3.x, overshoot1.x * 3);
-    Assert.assertEquals(overshoot2.x, overshoot1.x * 2);
+    Assertions.assertEquals(overshoot3.x, overshoot1.x * 3);
+    Assertions.assertEquals(overshoot2.x, overshoot1.x * 2);
   }
 
   @Test
@@ -61,19 +61,19 @@ public class DefaultOvershootManagerTest {
       long nextTime = manager.deriveNextMouseMovementTimeMs(
           (long) (DefaultOvershootManager.OVERSHOOT_SPEEDUP_DIVIDER * 500), 3
       );
-      Assert.assertEquals(500, nextTime);
+      Assertions.assertEquals(500, nextTime);
     }
 
     {
       manager.setOvershootSpeedupDivider(2);
       long nextTime = manager.deriveNextMouseMovementTimeMs(1000, 3);
-      Assert.assertEquals(500, nextTime);
+      Assertions.assertEquals(500, nextTime);
     }
 
     {
       manager.setOvershootSpeedupDivider(4);
       long nextTime = manager.deriveNextMouseMovementTimeMs(1000, 3);
-      Assert.assertEquals(250, nextTime);
+      Assertions.assertEquals(250, nextTime);
     }
   }
 
@@ -86,7 +86,7 @@ public class DefaultOvershootManagerTest {
       manager.setOvershootSpeedupDivider(2);
       manager.setMinOvershootMovementMs(1500);
       long nextTime = manager.deriveNextMouseMovementTimeMs(1000, 3);
-      Assert.assertEquals(1500, nextTime);
+      Assertions.assertEquals(1500, nextTime);
     }
   }
 }

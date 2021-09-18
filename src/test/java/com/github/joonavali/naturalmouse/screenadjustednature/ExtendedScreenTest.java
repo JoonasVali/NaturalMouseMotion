@@ -9,9 +9,9 @@ import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
 import com.github.joonavali.naturalmouse.testutils.MockRandom;
 import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
 import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class ExtendedScreenTest {
   MouseMotionFactory factory;
   MockMouse mouse;
 
-  @Before
+  @BeforeEach
   public void setup() {
     factory = new MouseMotionFactory();
     factory.setNature(new ScreenAdjustedNature(new Dimension(1800, 1500), new Point(0, 0)));
@@ -39,7 +39,7 @@ public class ExtendedScreenTest {
     factory.move(1800, 1500);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(100, 100), moves.get(0));
-    Assert.assertEquals(new Point(1799, 1499), moves.get(moves.size() - 1));
+    Assertions.assertEquals(new Point(100, 100), moves.get(0));
+    Assertions.assertEquals(new Point(1799, 1499), moves.get(moves.size() - 1));
   }
 }

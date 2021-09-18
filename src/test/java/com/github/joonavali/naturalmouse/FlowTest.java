@@ -1,8 +1,8 @@
 package com.github.joonavali.naturalmouse;
 
 import com.github.joonasvali.naturalmouse.support.Flow;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
@@ -19,11 +19,11 @@ public class FlowTest {
     double[] result = flow.getFlowCharacteristics();
     double sum = 0;
     for (int i = 0; i < result.length; i++) {
-      Assert.assertEquals(100, result[i], SMALL_DELTA);
+      Assertions.assertEquals(100, result[i], SMALL_DELTA);
       sum += result[i];
     }
 
-    Assert.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
+    Assertions.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
   }
 
   @Test
@@ -35,11 +35,11 @@ public class FlowTest {
     double[] result = flow.getFlowCharacteristics();
     double sum = 0;
     for (int i = 0; i < result.length; i++) {
-      Assert.assertEquals(100, result[i], SMALL_DELTA);
+      Assertions.assertEquals(100, result[i], SMALL_DELTA);
       sum += result[i];
     }
 
-    Assert.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
+    Assertions.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
   }
 
   @Test
@@ -51,11 +51,11 @@ public class FlowTest {
     double[] result = flow.getFlowCharacteristics();
     double sum = 0;
     for (int i = 0; i < result.length; i++) {
-      Assert.assertEquals(100, result[i], SMALL_DELTA);
+      Assertions.assertEquals(100, result[i], SMALL_DELTA);
       sum += result[i];
     }
 
-    Assert.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
+    Assertions.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
   }
 
   @Test
@@ -69,13 +69,13 @@ public class FlowTest {
     for (int i = 0; i < result.length; i++) {
       sum += result[i];
     }
-    Assert.assertEquals(33.33333333d, result[0], SMALL_DELTA);
-    Assert.assertEquals(66.66666666d, result[1], SMALL_DELTA);
-    Assert.assertEquals(100.00000000d, result[2], SMALL_DELTA);
-    Assert.assertEquals(133.33333333d, result[3], SMALL_DELTA);
-    Assert.assertEquals(166.66666666d, result[4], SMALL_DELTA);
+    Assertions.assertEquals(33.33333333d, result[0], SMALL_DELTA);
+    Assertions.assertEquals(66.66666666d, result[1], SMALL_DELTA);
+    Assertions.assertEquals(100.00000000d, result[2], SMALL_DELTA);
+    Assertions.assertEquals(133.33333333d, result[3], SMALL_DELTA);
+    Assertions.assertEquals(166.66666666d, result[4], SMALL_DELTA);
 
-    Assert.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
+    Assertions.assertEquals(100 * characteristics.length, sum, SMALL_DELTA);
   }
 
   @Test
@@ -88,7 +88,7 @@ public class FlowTest {
     double step4 = flow.getStepSize(100, 5, 0.6);
     double step5 = flow.getStepSize(100, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(100d, sum, SMALL_DELTA);
+    Assertions.assertEquals(100d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -101,7 +101,7 @@ public class FlowTest {
     double step4 = flow.getStepSize(100, 5, 0.6);
     double step5 = flow.getStepSize(100, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(100d, sum, SMALL_DELTA);
+    Assertions.assertEquals(100d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -114,7 +114,7 @@ public class FlowTest {
     double step4 = flow.getStepSize(100, 5, 0.6);
     double step5 = flow.getStepSize(100, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(100d, sum, SMALL_DELTA);
+    Assertions.assertEquals(100d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -127,7 +127,7 @@ public class FlowTest {
     double step4 = flow.getStepSize(100, 5, 0.6);
     double step5 = flow.getStepSize(100, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(100d, sum, SMALL_DELTA);
+    Assertions.assertEquals(100d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -138,7 +138,7 @@ public class FlowTest {
     double step2 = flow.getStepSize(100, 3, 1d/3d);
     double step3 = flow.getStepSize(100, 3, 1d/3d * 2);
     double sum = step1 + step2 + step3;
-    Assert.assertEquals(100d, sum, SMALL_DELTA);
+    Assertions.assertEquals(100d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -151,7 +151,7 @@ public class FlowTest {
     double step4 = flow.getStepSize(100, 5, 0.6);
     double step5 = flow.getStepSize(100, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(100d, sum, SMALL_DELTA);
+    Assertions.assertEquals(100d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -164,7 +164,7 @@ public class FlowTest {
     double step4 = flow.getStepSize(500, 5, 0.6);
     double step5 = flow.getStepSize(500, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(500d, sum, SMALL_DELTA);
+    Assertions.assertEquals(500d, sum, SMALL_DELTA);
   }
 
   @Test
@@ -177,6 +177,6 @@ public class FlowTest {
     double step4 = flow.getStepSize(500, 5, 0.6);
     double step5 = flow.getStepSize(500, 5, 0.8);
     double sum = step1 + step2 + step3 + step4 + step5;
-    Assert.assertEquals(500d, sum, SMALL_DELTA);
+    Assertions.assertEquals(500d, sum, SMALL_DELTA);
   }
 }
