@@ -13,17 +13,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 
 @Isolated
 public class HeadlessEnvTest {
   @BeforeEach
-  public void setUpHeadlessMode() {
+  public void setUpHeadlessMode() throws NoSuchFieldException, IllegalAccessException {
+    // It's cached internally, so just changing the headless property is not enough after initial loading.
     System.setProperty("java.awt.headless", "true");
+    Field f = GraphicsEnvironment.class.getDeclaredField("headless");
+    f.setAccessible(true);
+    f.set(null, Boolean.TRUE);
   }
 
   @AfterEach
-  public void tearDownHeadlessMode() {
+  public void tearDownHeadlessMode() throws NoSuchFieldException, IllegalAccessException {
+    // It's cached internally, so just changing the headless property is not enough after initial loading.
     System.setProperty("java.awt.headless", "false");
+    Field f = GraphicsEnvironment.class.getDeclaredField("headless");
+    f.setAccessible(true);
+    f.set(null, Boolean.FALSE);
   }
 
   private final Point mousePos = new Point(5, 5);
@@ -71,5 +80,11 @@ public class HeadlessEnvTest {
     factory.move(1, 1);
     factory = FactoryTemplates.createAverageComputerUserMotionFactory(nature);
     factory.move(2, 2);
+  }
+
+  @Test
+  public void testUsingDefaultFactoryThrowsError() throws InterruptedException {
+    RuntimeException exception = Assertions.assertThrows(RuntimeException.class, MouseMotionFactory::getDefault);
+    Assertions.assertEquals(AWTException.class, exception.getCause().getClass());
   }
 }
