@@ -1,3 +1,6 @@
+## v 2.0.3
+Fix: Fixed issue where spontaneous default MouseMotionFactory initialization caused exception in headless environments.
+
 ## v 2.0.2
 Feature: existing FactoryTemplates now allow passing MouseMotionNature as a parameter.
 Fix: Fixed issue with FlowUtil that caused modifier to be applied too early for some inputs. (Did not affect runtime, separate tool.)
