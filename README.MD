@@ -132,6 +132,11 @@ In `MouseInfoAccessor` you need to implement the `getMousePosition()` method to 
 
 And that's basically it, rest is handled by NaturalMouseMotion internals.
 
+### I want to run NaturalMouseMotion in a headless environment
+
+See previous section. You need to provide your own `SystemCalls` and `MouseInfoAccessor` objects.
+If you attempt to use default implementations in a headless environment, then `java.awt.AWTException` will be thrown.
+
 ## Troubleshooting
 
 ### The mouse gets stuck trying to move to destination or won't end up on correct pixel.
