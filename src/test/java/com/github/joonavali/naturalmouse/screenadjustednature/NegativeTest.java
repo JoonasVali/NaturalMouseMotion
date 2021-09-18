@@ -9,9 +9,9 @@ import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
 import com.github.joonavali.naturalmouse.testutils.MockRandom;
 import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
 import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class NegativeTest {
   MouseMotionFactory factory;
   MockMouse mouse;
 
-  @Before
+  @BeforeEach
   public void setup() {
     factory = new MouseMotionFactory();
     factory.setNature(new ScreenAdjustedNature(new Dimension(1800, 1500), new Point(-1000, -1000)));
@@ -39,8 +39,8 @@ public class NegativeTest {
     factory.move(500, 100);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(100, 100), moves.get(0));
-    Assert.assertEquals(new Point(-500, -900), moves.get(moves.size() - 1));
+    Assertions.assertEquals(new Point(100, 100), moves.get(0));
+    Assertions.assertEquals(new Point(-500, -900), moves.get(moves.size() - 1));
   }
 
 
@@ -50,8 +50,8 @@ public class NegativeTest {
     factory.move(-1, -1);
 
     ArrayList<Point> moves = mouse.getMouseMovements();
-    Assert.assertEquals(new Point(100, 100), moves.get(0));
+    Assertions.assertEquals(new Point(100, 100), moves.get(0));
     // Expect the offset to limit the mouse movement to -1000, -1000
-    Assert.assertEquals(new Point(-1000, -1000), moves.get(moves.size() - 1));
+    Assertions.assertEquals(new Point(-1000, -1000), moves.get(moves.size() - 1));
   }
 }

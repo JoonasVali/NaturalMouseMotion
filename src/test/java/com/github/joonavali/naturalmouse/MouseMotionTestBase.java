@@ -11,8 +11,8 @@ import com.github.joonavali.naturalmouse.testutils.MockNoiseProvider;
 import com.github.joonavali.naturalmouse.testutils.MockRandom;
 import com.github.joonavali.naturalmouse.testutils.MockSpeedManager;
 import com.github.joonavali.naturalmouse.testutils.MockSystemCalls;
-import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.awt.*;
 import java.util.Random;
@@ -29,7 +29,7 @@ public class MouseMotionTestBase {
   protected Random random;
   protected MockMouse mouse;
 
-  @Before
+  @BeforeEach
   public void setup() {
     mouse = new MockMouse();
     factory = new MouseMotionFactory();
@@ -50,8 +50,8 @@ public class MouseMotionTestBase {
 
   protected void assertMousePosition(int x, int y) {
     Point pos = mouse.getMousePosition();
-    Assert.assertEquals(x, pos.getX(), SMALL_DELTA);
-    Assert.assertEquals(y, pos.getY(), SMALL_DELTA);
+    Assertions.assertEquals(x, pos.getX(), SMALL_DELTA);
+    Assertions.assertEquals(y, pos.getY(), SMALL_DELTA);
   }
 
 

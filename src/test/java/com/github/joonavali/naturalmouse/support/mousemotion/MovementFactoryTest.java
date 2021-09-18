@@ -6,8 +6,8 @@ import com.github.joonasvali.naturalmouse.support.Flow;
 import com.github.joonasvali.naturalmouse.support.mousemotion.Movement;
 import com.github.joonasvali.naturalmouse.support.mousemotion.MovementFactory;
 import com.github.joonasvali.naturalmouse.util.Pair;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.util.ArrayDeque;
@@ -23,13 +23,13 @@ public class MovementFactoryTest {
     MovementFactory factory = new MovementFactory(50, 51, speedManager, overshootManager, new Dimension(500, 500));
 
     ArrayDeque<Movement> movements = factory.createMovements(new Point(100, 100));
-    Assert.assertEquals(1, movements.size());
-    Assert.assertEquals(50, movements.getFirst().destX);
-    Assert.assertEquals(51, movements.getFirst().destY);
-    Assert.assertEquals(100, movements.getFirst().time);
-    Assert.assertEquals(-50, movements.getFirst().xDistance, SMALL_DELTA);
-    Assert.assertEquals(-49, movements.getFirst().yDistance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, movements.getFirst().flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(1, movements.size());
+    Assertions.assertEquals(50, movements.getFirst().destX);
+    Assertions.assertEquals(51, movements.getFirst().destY);
+    Assertions.assertEquals(100, movements.getFirst().time);
+    Assertions.assertEquals(-50, movements.getFirst().xDistance, SMALL_DELTA);
+    Assertions.assertEquals(-49, movements.getFirst().yDistance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, movements.getFirst().flow.getFlowCharacteristics(), SMALL_DELTA);
   }
 
   @Test
@@ -39,35 +39,35 @@ public class MovementFactoryTest {
     MovementFactory factory = new MovementFactory(50, 150, speedManager, overshootManager, new Dimension(500, 500));
 
     ArrayDeque<Movement> movements = factory.createMovements(new Point(100, 100));
-    Assert.assertEquals(3, movements.size());
+    Assertions.assertEquals(3, movements.size());
 
     Movement first = movements.removeFirst();
-    Assert.assertEquals(55, first.destX);
-    Assert.assertEquals(155, first.destY);
-    Assert.assertEquals(100, first.time);
-    Assert.assertEquals(-45, first.xDistance, SMALL_DELTA);
-    Assert.assertEquals(55, first.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(first.xDistance, first.yDistance), first.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, first.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(55, first.destX);
+    Assertions.assertEquals(155, first.destY);
+    Assertions.assertEquals(100, first.time);
+    Assertions.assertEquals(-45, first.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(55, first.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(first.xDistance, first.yDistance), first.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, first.flow.getFlowCharacteristics(), SMALL_DELTA);
 
     Movement second = movements.removeFirst();
-    Assert.assertEquals(45, second.destX);
-    Assert.assertEquals(145, second.destY);
-    Assert.assertEquals(50, second.time);
-    Assert.assertEquals(-10, second.xDistance, SMALL_DELTA);
-    Assert.assertEquals(-10, second.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(second.xDistance, second.yDistance), second.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, second.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(45, second.destX);
+    Assertions.assertEquals(145, second.destY);
+    Assertions.assertEquals(50, second.time);
+    Assertions.assertEquals(-10, second.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(-10, second.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(second.xDistance, second.yDistance), second.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, second.flow.getFlowCharacteristics(), SMALL_DELTA);
 
 
     Movement third = movements.removeFirst();
-    Assert.assertEquals(50, third.destX);
-    Assert.assertEquals(150, third.destY);
-    Assert.assertEquals(50, third.time);
-    Assert.assertEquals(5, third.xDistance, SMALL_DELTA);
-    Assert.assertEquals(5, third.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(third.xDistance, third.yDistance), third.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, third.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(50, third.destX);
+    Assertions.assertEquals(150, third.destY);
+    Assertions.assertEquals(50, third.time);
+    Assertions.assertEquals(5, third.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(5, third.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(third.xDistance, third.yDistance), third.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, third.flow.getFlowCharacteristics(), SMALL_DELTA);
   }
 
   @Test
@@ -77,43 +77,43 @@ public class MovementFactoryTest {
     MovementFactory factory = new MovementFactory(50, 150, speedManager, overshootManager, new Dimension(500, 500));
 
     ArrayDeque<Movement> movements = factory.createMovements(new Point(100, 100));
-    Assert.assertEquals(4, movements.size()); // 3 overshoots and 1 final approach to destination
+    Assertions.assertEquals(4, movements.size()); // 3 overshoots and 1 final approach to destination
 
     Movement first = movements.removeFirst();
-    Assert.assertEquals(55, first.destX);
-    Assert.assertEquals(155, first.destY);
-    Assert.assertEquals(64, first.time);
-    Assert.assertEquals(-45, first.xDistance, SMALL_DELTA);
-    Assert.assertEquals(55, first.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(first.xDistance, first.yDistance), first.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, first.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(55, first.destX);
+    Assertions.assertEquals(155, first.destY);
+    Assertions.assertEquals(64, first.time);
+    Assertions.assertEquals(-45, first.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(55, first.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(first.xDistance, first.yDistance), first.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, first.flow.getFlowCharacteristics(), SMALL_DELTA);
 
     Movement second = movements.removeFirst(); // 0-offset in the middle is not removed, this one actually hits destination.
-    Assert.assertEquals(50, second.destX);
-    Assert.assertEquals(150, second.destY);
-    Assert.assertEquals(32, second.time);
-    Assert.assertEquals(-5, second.xDistance, SMALL_DELTA);
-    Assert.assertEquals(-5, second.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(second.xDistance, second.yDistance), second.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, second.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(50, second.destX);
+    Assertions.assertEquals(150, second.destY);
+    Assertions.assertEquals(32, second.time);
+    Assertions.assertEquals(-5, second.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(-5, second.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(second.xDistance, second.yDistance), second.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, second.flow.getFlowCharacteristics(), SMALL_DELTA);
 
     Movement third = movements.removeFirst();
-    Assert.assertEquals(51, third.destX);
-    Assert.assertEquals(151, third.destY);
-    Assert.assertEquals(16, third.time);
-    Assert.assertEquals(1, third.xDistance, SMALL_DELTA);
-    Assert.assertEquals(1, third.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(third.xDistance, third.yDistance), third.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, third.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(51, third.destX);
+    Assertions.assertEquals(151, third.destY);
+    Assertions.assertEquals(16, third.time);
+    Assertions.assertEquals(1, third.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(1, third.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(third.xDistance, third.yDistance), third.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, third.flow.getFlowCharacteristics(), SMALL_DELTA);
 
     Movement fourth = movements.removeFirst();
-    Assert.assertEquals(50, fourth.destX);
-    Assert.assertEquals(150, fourth.destY);
-    Assert.assertEquals(32, fourth.time);
-    Assert.assertEquals(-1, fourth.xDistance, SMALL_DELTA);
-    Assert.assertEquals(-1, fourth.yDistance, SMALL_DELTA);
-    Assert.assertEquals(Math.hypot(fourth.xDistance, fourth.yDistance), fourth.distance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, fourth.flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(50, fourth.destX);
+    Assertions.assertEquals(150, fourth.destY);
+    Assertions.assertEquals(32, fourth.time);
+    Assertions.assertEquals(-1, fourth.xDistance, SMALL_DELTA);
+    Assertions.assertEquals(-1, fourth.yDistance, SMALL_DELTA);
+    Assertions.assertEquals(Math.hypot(fourth.xDistance, fourth.yDistance), fourth.distance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, fourth.flow.getFlowCharacteristics(), SMALL_DELTA);
   }
 
   @Test
@@ -123,14 +123,14 @@ public class MovementFactoryTest {
     MovementFactory factory = new MovementFactory(50, 150, speedManager, overshootManager, new Dimension(500, 500));
 
     ArrayDeque<Movement> movements = factory.createMovements(new Point(100, 100));
-    Assert.assertEquals(1, movements.size());
+    Assertions.assertEquals(1, movements.size());
 
-    Assert.assertEquals(50, movements.getFirst().destX);
-    Assert.assertEquals(150, movements.getFirst().destY);
-    Assert.assertEquals(50, movements.getFirst().time);
-    Assert.assertEquals(-50, movements.getFirst().xDistance, SMALL_DELTA);
-    Assert.assertEquals(50, movements.getFirst().yDistance, SMALL_DELTA);
-    Assert.assertArrayEquals(new double[]{100}, movements.getFirst().flow.getFlowCharacteristics(), SMALL_DELTA);
+    Assertions.assertEquals(50, movements.getFirst().destX);
+    Assertions.assertEquals(150, movements.getFirst().destY);
+    Assertions.assertEquals(50, movements.getFirst().time);
+    Assertions.assertEquals(-50, movements.getFirst().xDistance, SMALL_DELTA);
+    Assertions.assertEquals(50, movements.getFirst().yDistance, SMALL_DELTA);
+    Assertions.assertArrayEquals(new double[]{100}, movements.getFirst().flow.getFlowCharacteristics(), SMALL_DELTA);
   }
 
   protected SpeedManager createConstantSpeedManager(long time) {
